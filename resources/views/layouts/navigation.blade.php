@@ -42,7 +42,7 @@
       </div>
     </form> --}}
     <div class="flex items-center">
-      <a href="{{ route('login') }}">
+      <a href="{{ route('stores.create') }}">
         <x-outline-button>Create a Store</x-outline-button>
       </a>
 
