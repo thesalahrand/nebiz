@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Enums\Gender;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -25,9 +26,12 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->unique(true)->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'phone' => fake()->unique(true)->regexify('1[3456789]\d{8}'),
+            'gender' => fake()->randomElement(array_column(Gender::cases(), 'value')),
+            'birth_date' => fake()->date(),
             'remember_token' => Str::random(10),
         ];
     }
@@ -37,7 +41,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

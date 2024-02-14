@@ -72,13 +72,13 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div>
-        <x-input-label for="latitude" :value="__('Latitude')" />
+        <x-input-label for="latitude" :value="__('Latitude')" required="true" />
         <x-text-input id="latitude" name="latitude" type="number" :value="old('latitude')" autocomplete="latitude"
           min="-90" max="90" />
         <x-input-error :messages="$errors->get('latitude')" />
       </div>
       <div>
-        <x-input-label for="longitude" :value="__('Longitude')" />
+        <x-input-label for="longitude" :value="__('Longitude')" required="true" />
         <x-text-input id="longitude" name="longitude" type="number" :value="old('longitude')" autocomplete="longitude"
           min="-180" max="180" />
         <x-input-error :messages="$errors->get('longitude')" />
@@ -87,17 +87,17 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div x-data="imageViewer(@js(asset('images/placeholder-image.png')))">
-        <x-input-label for="cover" :value="__('Cover Image')" required="true" />
+        <x-input-label for="cover" :value="__('Cover Image')" />
         <x-file-input id="cover" name="cover" type="file" accept=".jpg, .jpeg" @change="fileChosen" />
-        <div class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="user_avatar_help">
+        <div class="mt-1 text-sm text-gray-500 dark:text-gray-300">
           {{ __('The cover image must be in JPG format (max 1 MB).') }}</div>
         <x-input-error :messages="$errors->get('cover')" />
         <img :src="imageUrl" class="rounded mt-2 w-16 object-cover" alt="store-cover-image">
       </div>
       <div>
         <x-input-label for="additional_info" :value="__('Write more about your store')" />
-        <x-textarea-input rows="9" id="additional_info" name="additional_info"
-          autocomplete="additional_info">{{ old('additional_info') }}</x-textarea-input>
+        <x-textarea-input rows="9" id="additional_info" name="additional_info" autocomplete="additional_info"
+          maxlength="1000">{{ old('additional_info') }}</x-textarea-input>
         <x-input-error :messages="$errors->get('additional_info')" />
       </div>
     </div>

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreStoreRequest;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
@@ -27,9 +29,23 @@ class StoreController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreStoreRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::id();
+
+        $store = Store::create($validated);
+
+        $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
+
+        $request->session()->flash('flash', [
+            'toast-message' => [
+                'type' => 'success',
+                'message' => trans('Congratulations! Your store has been created successfully.')
+            ]
+        ]);
+
+        return to_route('stores.index');
     }
 
     /**

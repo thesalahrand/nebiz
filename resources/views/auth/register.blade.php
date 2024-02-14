@@ -26,7 +26,8 @@
             +880
           </div>
           <x-text-input id="phone" type="tel" name="phone" class="ps-14" :value="old('phone')" required
-            autocomplete="phone" maxlength="10" pattern="\d+" title="Valid Bangladeshi mobile number excluding +880" />
+            autocomplete="phone" maxlength="10" pattern="1[3456789][\d]{8}"
+            title="Valid Bangladeshi mobile number excluding +880" />
         </div>
         <x-input-error :messages="$errors->get('phone')" />
       </div>

@@ -24,16 +24,14 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased dark:bg-gray-900">
-  <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-    @include('layouts.navigation')
+<body class="font-sans antialiased min-h-screen dark:bg-gray-900">
+  @include('layouts.navigation')
 
-    <main class="mt-20">
-      <div class="max-w-screen-xl mx-auto h-full p-4">
-        {{ $slot }}
-      </div>
-    </main>
-  </div>
+  <main class="mt-20">
+    <div class="max-w-screen-xl mx-auto h-full p-4">
+      {{ $slot }}
+    </div>
+  </main>
   <x-toast-message />
 </body>
 
