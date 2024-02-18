@@ -32,7 +32,7 @@ class StoreStoreRequest extends FormRequest
             'website' => ['nullable', 'string', 'url', 'max:255'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'cover' => ['required', 'file', 'mimetypes:image/jpeg', 'max:1024'],
+            'cover' => ['nullable', 'file', 'mimetypes:image/jpeg', 'max:1024'],
             'additional_text' => ['nullable', 'string', 'max:1000'],
         ];
     }

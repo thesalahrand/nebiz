@@ -8,7 +8,7 @@
       <div>
         <x-input-label for="name" :value="__('Name')" required="true" />
         <x-text-input id="name" name="name" type="text" :value="old('name')" required autofocus
-          autocomplete="name" maxlength="255" />
+          autocomplete="name" maxlength="255" placeholder="{{ __('New Ghoroa Restaurant') }}" />
         <x-input-error :messages="$errors->get('name')" />
       </div>
       <div>
@@ -48,7 +48,8 @@
             +880
           </div>
           <x-text-input id="phone" type="tel" name="phone" class="ps-14" :value="old('phone')" required
-            autocomplete="phone" maxlength="10" pattern="\d+" title="Valid Bangladeshi mobile number excluding +880" />
+            autocomplete="phone" maxlength="10" pattern="\d+" placeholder="{{ __('1234567890') }}"
+            title="Valid Bangladeshi mobile number excluding +880" />
         </div>
         <x-input-error :messages="$errors->get('phone')" />
       </div>
@@ -59,29 +60,37 @@
       <div>
         <x-input-label for="email" :value="__('Email')" />
         <x-text-input id="email" name="email" type="email" :value="old('email')" autocomplete="email"
-          maxlength="255" />
+          maxlength="255" placeholder="{{ __('test@exampl.com') }}" />
         <x-input-error :messages="$errors->get('email')" />
       </div>
       <div>
         <x-input-label for="website" :value="__('Website')" />
         <x-text-input id="website" name="website" type="url" :value="old('website')" autocomplete="website"
-          maxlength="255" />
+          maxlength="255" placeholder="{{ __('https://example.com') }}" />
         <x-input-error :messages="$errors->get('website')" />
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-      <div>
-        <x-input-label for="latitude" :value="__('Latitude')" required="true" />
-        <x-text-input id="latitude" name="latitude" type="number" :value="old('latitude')" autocomplete="latitude"
-          min="-90" max="90" />
-        <x-input-error :messages="$errors->get('latitude')" />
+    <div class="mt-6" x-data="getShopGeoLocation(@js(old('latitude')) || geoLocation.latitude, @js(old('longitude')) || geoLocation.longitude)">
+      <div id="map" class="h-80"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+        <div>
+          <x-input-label for="latitude" :value="__('Latitude')" required="true" />
+          <x-text-input id="latitude" name="latitude" type="number" x-model.number="geoLocation.latitude"
+            autocomplete="latitude" min="-90" max="90" @input.debounce="update"
+            placeholder="{{ __('22.7413') }}" />
+          <x-input-error :messages="$errors->get('latitude')" />
+        </div>
+        <div>
+          <x-input-label for="longitude" :value="__('Longitude')" required="true" />
+          <x-text-input id="longitude" name="longitude" type="number" x-model.number="geoLocation.longitude"
+            autocomplete="longitude" min="-180" max="180" @input.debounce="update"
+            placeholder="{{ __('80.4357') }}" />
+          <x-input-error :messages="$errors->get('longitude')" />
+        </div>
       </div>
-      <div>
-        <x-input-label for="longitude" :value="__('Longitude')" required="true" />
-        <x-text-input id="longitude" name="longitude" type="number" :value="old('longitude')" autocomplete="longitude"
-          min="-180" max="180" />
-        <x-input-error :messages="$errors->get('longitude')" />
+      <div class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+        {{ __('This is initially filled as per your current geolocation. You may set your shops\'s geolocation manually or clicking the most accurate position from the map above.') }}
       </div>
     </div>
 
@@ -97,7 +106,8 @@
       <div>
         <x-input-label for="additional_info" :value="__('Write more about your store')" />
         <x-textarea-input rows="9" id="additional_info" name="additional_info" autocomplete="additional_info"
-          maxlength="1000">{{ old('additional_info') }}</x-textarea-input>
+          maxlength="1000"
+          placeholder="{{ __('Additional information about your store..') }}">{{ old('additional_info') }}</x-textarea-input>
         <x-input-error :messages="$errors->get('additional_info')" />
       </div>
     </div>

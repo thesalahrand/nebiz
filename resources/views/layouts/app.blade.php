@@ -24,7 +24,7 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased min-h-screen dark:bg-gray-900">
+<body class="font-sans antialiased min-h-screen dark:bg-gray-900" x-data="getGeoLocation">
   @include('layouts.navigation')
 
   <main class="mt-20">
