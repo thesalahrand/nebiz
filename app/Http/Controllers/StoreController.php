@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStoreRequest;
 use App\Models\Store;
+use App\Models\StoreOpeningHour;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,19 @@ class StoreController extends Controller
 
         $store = Store::create($validated);
 
-        $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
+        if (isset($validated['cover'])) {
+            $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
+        }
+
+        for ($weekdayIdx = 0; $weekdayIdx < 7; $weekdayIdx++) {
+            StoreOpeningHour::create([
+                'store_id' => $store->id,
+                'day_of_week' => $weekdayIdx,
+                'is_closed' => $validated['opening_hours'][$weekdayIdx]['is_closed'] ?? null,
+                'opens_at' => $validated['opening_hours'][$weekdayIdx]['opens_at'] ?? null,
+                'closes_at' => $validated['opening_hours'][$weekdayIdx]['closes_at'] ?? null,
+            ]);
+        }
 
         $request->session()->flash('flash', [
             'toast-message' => [

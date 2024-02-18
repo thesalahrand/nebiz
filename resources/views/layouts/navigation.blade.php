@@ -3,7 +3,7 @@
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto h-full p-4">
     <a href="{{ route('home') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
       <x-icons.application-logo class="h-8 fill-current text-gray-900 dark:text-white" />
-      <span class="self-center hidden font-semibold sm:inline sm:text-xl whitespace-nowrap dark:text-white">
+      <span class="self-center hidden font-bold sm:inline sm:text-xl whitespace-nowrap text-gray-900 dark:text-white">
         {{ config('app.name', 'Laravel') }}</span>
     </a>
     {{-- <form class="w-2/5">

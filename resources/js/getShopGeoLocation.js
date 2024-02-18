@@ -18,7 +18,9 @@ const getShopGeoLocation = (latitude, longitude) => {
                 zoom: 9,
             });
 
-            marker = new mapboxgl.Marker()
+            marker = new mapboxgl.Marker({
+                color: "#111827",
+            })
                 .setLngLat([
                     this.geoLocation.longitude,
                     this.geoLocation.latitude,

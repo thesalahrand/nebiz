@@ -77,28 +77,78 @@
         <div>
           <x-input-label for="latitude" :value="__('Latitude')" required="true" />
           <x-text-input id="latitude" name="latitude" type="number" x-model.number="geoLocation.latitude"
-            autocomplete="latitude" min="-90" max="90" @input.debounce="update"
+            autocomplete="latitude" min="-90" max="90" step="0.000001" @input.debounce="update"
             placeholder="{{ __('22.7413') }}" />
           <x-input-error :messages="$errors->get('latitude')" />
         </div>
         <div>
           <x-input-label for="longitude" :value="__('Longitude')" required="true" />
           <x-text-input id="longitude" name="longitude" type="number" x-model.number="geoLocation.longitude"
-            autocomplete="longitude" min="-180" max="180" @input.debounce="update"
+            autocomplete="longitude" min="-180" max="180" step="0.000001" @input.debounce="update"
             placeholder="{{ __('80.4357') }}" />
           <x-input-error :messages="$errors->get('longitude')" />
         </div>
       </div>
-      <div class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+      <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
         {{ __('This is initially filled as per your current geolocation. You may set your shops\'s geolocation manually or clicking the most accurate position from the map above.') }}
       </div>
+    </div>
+
+    <div class="mt-6">
+
+    </div>
+    <div class="relative overflow-x-auto">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" class="px-6 py-3">
+              {{ __('Weekday') }}
+            </th>
+            <th scope="col" class="px-6 py-3">
+              {{ __('Closed?') }}
+            </th>
+            <th scope="col" class="px-6 py-3">
+              {{ __('Opens at') }}
+            </th>
+            <th scope="col" class="px-6 py-3">
+              {{ __('Closes at') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for ($weekdayIdx = 0; $weekdayIdx < 7; $weekdayIdx++)
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" x-data="{ isClosed: false }">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                {{ now()->setDaysFromStartOfWeek($weekdayIdx)->format('l') }}
+              </th>
+              <td class="px-6 py-4">
+                <x-checkbox-input name="opening_hours[{{ $weekdayIdx }}][is_closed]"
+                  autocomplete="is_closed_{{ $weekdayIdx }}" value="1" x-model="isClosed" />
+                <x-input-error :messages="$errors->get('opening_hours.' . $weekdayIdx . '.is_closed')" />
+              </td>
+              <td class="px-6 py-4">
+                <x-text-input type="time" name="opening_hours[{{ $weekdayIdx }}][opens_at]"
+                  autocomplete="opens_at_{{ $weekdayIdx }}" x-bind:disabled="isClosed"
+                  x-bind:value="isClosed && null" />
+                <x-input-error :messages="$errors->get('opening_hours.' . $weekdayIdx . '.opens_at')" />
+              </td>
+              <td class="px-6 py-4">
+                <x-text-input type="time" name="opening_hours[{{ $weekdayIdx }}][closes_at]"
+                  autocomplete="closes_at_{{ $weekdayIdx }}" x-bind:disabled="isClosed"
+                  x-bind:value="isClosed && null" />
+                <x-input-error :messages="$errors->get('opening_hours.' . $weekdayIdx . '.closes_at')" />
+              </td>
+            </tr>
+          @endfor
+        </tbody>
+      </table>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div x-data="imageViewer(@js(asset('images/placeholder-image.png')))">
         <x-input-label for="cover" :value="__('Cover Image')" />
         <x-file-input id="cover" name="cover" type="file" accept=".jpg, .jpeg" @change="fileChosen" />
-        <div class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {{ __('The cover image must be in JPG format (max 1 MB).') }}</div>
         <x-input-error :messages="$errors->get('cover')" />
         <img :src="imageUrl" class="rounded mt-2 w-16 object-cover" alt="store-cover-image">
