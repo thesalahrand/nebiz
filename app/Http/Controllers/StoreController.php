@@ -41,13 +41,15 @@ class StoreController extends Controller
             $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
         }
 
-        for ($weekdayIdx = 0; $weekdayIdx < 7; $weekdayIdx++) {
+        for ($i = 0; $i < count($validated['opening_hours']); $i++) {
+            $openingHour = $validated['opening_hours'][$i];
+
             StoreOpeningHour::create([
                 'store_id' => $store->id,
-                'day_of_week' => $weekdayIdx,
-                'is_closed' => $validated['opening_hours'][$weekdayIdx]['is_closed'] ?? null,
-                'opens_at' => $validated['opening_hours'][$weekdayIdx]['opens_at'] ?? null,
-                'closes_at' => $validated['opening_hours'][$weekdayIdx]['closes_at'] ?? null,
+                'day_of_week' => $i,
+                'is_closed' => $openingHour['is_closed'] ?? 0,
+                'opens_at' => $openingHour['opens_at'] ?? null,
+                'closes_at' => $openingHour['closes_at'] ?? null,
             ]);
         }
 

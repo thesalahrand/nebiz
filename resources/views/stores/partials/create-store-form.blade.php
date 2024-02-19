@@ -116,27 +116,28 @@
           </tr>
         </thead>
         <tbody>
-          @for ($weekdayIdx = 0; $weekdayIdx < 7; $weekdayIdx++)
+          @for ($dayOfWeek = 0; $dayOfWeek < 7; $dayOfWeek++)
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" x-data="{ isClosed: false }">
               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                {{ now()->setDaysFromStartOfWeek($weekdayIdx)->format('l') }}
+                {{ now()->setDaysFromStartOfWeek($dayOfWeek)->format('l') }}
               </th>
               <td class="px-6 py-4">
-                <x-checkbox-input name="opening_hours[{{ $weekdayIdx }}][is_closed]"
-                  autocomplete="is_closed_{{ $weekdayIdx }}" value="1" x-model="isClosed" />
-                <x-input-error :messages="$errors->get('opening_hours.' . $weekdayIdx . '.is_closed')" />
+                <x-checkbox-input name="opening_hours[{{ $dayOfWeek }}][is_closed]"
+                  autocomplete="is_closed_{{ $dayOfWeek }}" value="1" x-model="isClosed"
+                  :checked="old('opening_hours.' . $dayOfWeek . '.is_closed')" />
+                <x-input-error :messages="$errors->get('opening_hours.' . $dayOfWeek . '.is_closed')" />
               </td>
               <td class="px-6 py-4">
-                <x-text-input type="time" name="opening_hours[{{ $weekdayIdx }}][opens_at]"
-                  autocomplete="opens_at_{{ $weekdayIdx }}" x-bind:disabled="isClosed"
+                <x-text-input type="time" name="opening_hours[{{ $dayOfWeek }}][opens_at]"
+                  autocomplete="opens_at_{{ $dayOfWeek }}" x-bind:disabled="isClosed" :value="old('opening_hours.' . $dayOfWeek . '.opens_at')"
                   x-bind:value="isClosed && null" />
-                <x-input-error :messages="$errors->get('opening_hours.' . $weekdayIdx . '.opens_at')" />
+                <x-input-error :messages="$errors->get('opening_hours.' . $dayOfWeek . '.opens_at')" />
               </td>
               <td class="px-6 py-4">
-                <x-text-input type="time" name="opening_hours[{{ $weekdayIdx }}][closes_at]"
-                  autocomplete="closes_at_{{ $weekdayIdx }}" x-bind:disabled="isClosed"
+                <x-text-input type="time" name="opening_hours[{{ $dayOfWeek }}][closes_at]"
+                  autocomplete="closes_at_{{ $dayOfWeek }}" x-bind:disabled="isClosed" :value="old('opening_hours.' . $dayOfWeek . '.closes_at')"
                   x-bind:value="isClosed && null" />
-                <x-input-error :messages="$errors->get('opening_hours.' . $weekdayIdx . '.closes_at')" />
+                <x-input-error :messages="$errors->get('opening_hours.' . $dayOfWeek . '.closes_at')" />
               </td>
             </tr>
           @endfor

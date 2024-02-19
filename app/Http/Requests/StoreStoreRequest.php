@@ -32,7 +32,7 @@ class StoreStoreRequest extends FormRequest
             'website' => ['nullable', 'string', 'url', 'max:255'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
-            'opening_hours' => ['required', 'array', 'size:7'],
+            'opening_hours' => ['required', 'array:0,1,2,3,4,5,6', 'size:7'],
             'opening_hours.*.is_closed' => ['sometimes', 'in:1'],
             'opening_hours.*.opens_at' => ['exclude_if:opening_hours.*.is_closed,1', 'nullable', 'date_format:H:i'],
             'opening_hours.*.closes_at' => ['exclude_if:opening_hours.*.is_closed,1', 'nullable', 'date_format:H:i'],

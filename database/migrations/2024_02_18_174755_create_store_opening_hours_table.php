@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('store_id')->constrained();
             $table->unsignedTinyInteger('day_of_week');
-            $table->boolean('is_closed')->nullable();
+            $table->boolean('is_closed');
             $table->string('opens_at', 5)->nullable();
             $table->string('closes_at', 5)->nullable();
             $table->softDeletes();
