@@ -15,6 +15,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Store extends Model implements HasMedia
 {
+    public const SEED_AMOUNT = 50;
     private const MY_FIXED_LATITUDE = 22.711555;
     private const MY_FIXED_LONGITUDE = 90.3609395;
 
@@ -27,6 +28,7 @@ class Store extends Model implements HasMedia
      */
     protected $fillable = [
         'user_id',
+        'store_type_id',
         'name',
         'address',
         'area',
@@ -56,6 +58,11 @@ class Store extends Model implements HasMedia
     public function openingHours(): HasMany
     {
         return $this->hasMany(StoreOpeningHour::class);
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(StoreType::class, 'store_type_id');
     }
 
     public function registerMediaConversions(Media $media = null): void

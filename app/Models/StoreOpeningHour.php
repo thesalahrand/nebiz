@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StoreOpeningHour extends Model
 {
+    public const SEED_AMOUNT = 140;
+
     use HasFactory;
 
     /**

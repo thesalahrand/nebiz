@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Store;
 
 class StoreSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class StoreSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Store::factory()->count(100)->create();
+        Store::factory()->count(Store::SEED_AMOUNT)->create();
     }
 }

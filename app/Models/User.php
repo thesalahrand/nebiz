@@ -15,6 +15,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
+    public const SEED_AMOUNT = 10;
+
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, InteractsWithMedia;
 
     /**
@@ -53,7 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'password' => 'hashed',
     ];
 
-    public function user(): HasMany
+    public function stores(): HasMany
     {
         return $this->hasMany(Store::class);
     }

@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\StoreType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
-class UserSeeder extends Seeder
+class StoreTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        User::factory()->count(User::SEED_AMOUNT)->create();
+        StoreType::factory()->count(StoreType::SEED_AMOUNT)->create();
     }
 }

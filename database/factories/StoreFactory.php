@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use App\Models\StoreType;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Store>
@@ -18,7 +19,8 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
+            'user_id' => fake()->numberBetween(1, User::SEED_AMOUNT),
+            'store_type_id' => fake()->numberBetween(1, StoreType::SEED_AMOUNT),
             'name' => fake()->company,
             'address' => fake()->streetAddress,
             'area' => fake()->citySuffix,
