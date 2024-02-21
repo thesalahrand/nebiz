@@ -20,7 +20,7 @@ class StoreFactory extends Factory
     {
         return [
             'user_id' => fake()->numberBetween(1, User::SEED_AMOUNT),
-            'store_type_id' => fake()->numberBetween(1, StoreType::SEED_AMOUNT),
+            'store_type_id' => StoreType::factory(),
             'name' => fake()->company,
             'address' => fake()->streetAddress,
             'area' => fake()->citySuffix,

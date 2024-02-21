@@ -16,7 +16,8 @@ class StoreController extends Controller
      */
     public function index()
     {
-        //
+        $stores = Store::with('type')->where('user_id', Auth::id())->latest()->get();
+        return view('stores.index', compact('stores'));
     }
 
     /**

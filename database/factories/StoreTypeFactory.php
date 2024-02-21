@@ -17,7 +17,7 @@ class StoreTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique(true)->words(2, true),
+            'name' => ucwords(fake()->unique(true)->words(2, true)),
             'additional_info' => fake()->paragraph
         ];
     }
