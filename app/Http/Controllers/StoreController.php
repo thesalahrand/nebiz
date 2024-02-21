@@ -6,6 +6,7 @@ use App\Http\Requests\StoreStoreRequest;
 use App\Models\Store;
 use App\Models\StoreOpeningHour;
 use App\Models\StoreType;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -15,10 +16,9 @@ class StoreController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
         $stores = Store::with('type')->where('user_id', Auth::id())->latest()->get();
-        // dd($stores);
         return view('stores.index', compact('stores'));
     }
 
@@ -34,7 +34,7 @@ class StoreController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreStoreRequest $request)
+    public function store(StoreStoreRequest $request): RedirectResponse
     {
         $validated = $request->validated();
         $validated['user_id'] = Auth::id();
@@ -94,8 +94,18 @@ class StoreController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Store $store)
+    public function destroy(Request $request, Store $store): RedirectResponse
     {
-        //
+        $store->clearMediaCollection('store-covers');
+        $store->delete();
+
+        $request->session()->flash('flash', [
+            'toast-message' => [
+                'type' => 'success',
+                'message' => trans('The store has been deleted successfully.')
+            ]
+        ]);
+
+        return back();
     }
 }
