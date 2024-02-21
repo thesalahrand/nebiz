@@ -4,18 +4,27 @@
 
     <h5 class="text-xl font-semibold text-gray-900 dark:text-white"> {{ __('Create a Store') }} </h5>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+    <div class="mt-6">
       <div>
         <x-input-label for="name" :value="__('Name')" required="true" />
         <x-text-input id="name" name="name" type="text" :value="old('name')" required autofocus
           autocomplete="name" maxlength="255" placeholder="{{ __('New Ghoroa Restaurant') }}" />
         <x-input-error :messages="$errors->get('name')" />
       </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div>
         <x-input-label for="address" :value="__('Address')" required="true" />
         <x-text-input id="address" name="address" type="text" :value="old('address')" required autocomplete="address"
           placeholder="{{ __('444 K.B. Hemayet Uddin Rd') }}" maxlength="255" />
         <x-input-error :messages="$errors->get('address')" />
+      </div>
+      <div>
+        <x-input-label for="store_type_id" :value="__('Type')" required="true" />
+        <x-select-input id="store_type_id" name="store_type_id" :options="$types" chooseOptionText="Select a Type"
+          :selectedOption="old('store_type_id')" required autocomplete="store_type_id" />
+        <x-input-error :messages="$errors->get('store_type_id')" />
       </div>
     </div>
 

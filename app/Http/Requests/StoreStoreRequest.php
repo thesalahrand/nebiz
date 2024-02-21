@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use App\Models\StoreType;
 
 class StoreStoreRequest extends FormRequest
 {
@@ -23,7 +25,8 @@ class StoreStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'address' => ['nullable', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'store_type_id' => ['required', 'integer', 'min:1', Rule::exists(StoreType::class, 'id')->withoutTrashed()],
             'area' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
             'postal_code' => ['nullable', 'string', 'max:255'],

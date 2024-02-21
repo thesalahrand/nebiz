@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreStoreRequest;
 use App\Models\Store;
 use App\Models\StoreOpeningHour;
+use App\Models\StoreType;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ class StoreController extends Controller
     public function index()
     {
         $stores = Store::with('type')->where('user_id', Auth::id())->latest()->get();
+        // dd($stores);
         return view('stores.index', compact('stores'));
     }
 
@@ -25,7 +27,8 @@ class StoreController extends Controller
      */
     public function create(): View
     {
-        return view('stores.create');
+        $types = StoreType::select('id as value', 'name')->latest()->get();
+        return view('stores.create', compact('types'));
     }
 
     /**

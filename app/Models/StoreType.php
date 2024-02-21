@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StoreType extends Model
 {
     public const SEED_AMOUNT = 15;
 
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     public function stores(): HasMany
     {
