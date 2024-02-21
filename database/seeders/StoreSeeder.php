@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Store;
+use App\Models\StoreOpeningHour;
 
 class StoreSeeder extends Seeder
 {
@@ -13,6 +14,9 @@ class StoreSeeder extends Seeder
      */
     public function run(): void
     {
-        Store::factory()->count(Store::SEED_AMOUNT)->create();
+        Store::factory()
+            ->count(Store::SEED_AMOUNT)
+            ->hasOpeningHours(7)
+            ->create();
     }
 }

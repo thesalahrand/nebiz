@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class StoreOpeningHourFactory extends Factory
 {
+    private static int $dayOfWeek = 0;
     /**
      * Define the model's default state.
      *
@@ -21,6 +22,7 @@ class StoreOpeningHourFactory extends Factory
         sort($opensClosesAt);
 
         return [
+            'day_of_week' => static::$dayOfWeek++ % 7,
             'is_closed' => $isClosed,
             'opens_at' => $isClosed ? null : $opensClosesAt[0],
             'closes_at' => $isClosed ? null : $opensClosesAt[1],
