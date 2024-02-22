@@ -40,7 +40,7 @@ class Store extends Model implements HasMedia
         'latitude',
         'longitude',
         'cover',
-        'additional_text'
+        'additional_info'
     ];
 
     protected function distance(): Attribute

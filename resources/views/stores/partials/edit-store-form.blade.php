@@ -1,13 +1,14 @@
 <section class="w-full max-w-3xl">
-  <form method="post" action="{{ route('stores.store') }}" enctype="multipart/form-data">
+  <form method="post" action="{{ route('stores.update', $store->id) }}" enctype="multipart/form-data">
     @csrf
+    @method('PUT')
 
-    <h5 class="text-xl font-semibold text-gray-900 dark:text-white"> {{ __('Create a Store') }} </h5>
+    <h5 class="text-xl font-semibold text-gray-900 dark:text-white"> {{ __('Edit Store') }} </h5>
 
     <div class="mt-6">
       <div>
         <x-input-label for="name" :value="__('Name')" required="true" />
-        <x-text-input id="name" name="name" type="text" :value="old('name')" required autofocus
+        <x-text-input id="name" name="name" type="text" :value="old('name', $store->name)" required autofocus
           autocomplete="name" maxlength="255" placeholder="{{ __('New Ghoroa Restaurant') }}" />
         <x-input-error :messages="$errors->get('name')" />
       </div>
@@ -16,14 +17,14 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div>
         <x-input-label for="address" :value="__('Address')" required="true" />
-        <x-text-input id="address" name="address" type="text" :value="old('address')" required autocomplete="address"
+        <x-text-input id="address" name="address" type="text" :value="old('address', $store->address)" required autocomplete="address"
           placeholder="{{ __('444 K.B. Hemayet Uddin Rd') }}" maxlength="255" />
         <x-input-error :messages="$errors->get('address')" />
       </div>
       <div>
         <x-input-label for="store_type_id" :value="__('Type')" required="true" />
         <x-select-input id="store_type_id" name="store_type_id" :options="$types" chooseOptionText="Select a Type"
-          :selectedOptionValue="old('store_type_id')" required autocomplete="store_type_id" />
+          :selectedOptionValue="old('store_type_id', $store->store_type_id)" required autocomplete="store_type_id" />
         <x-input-error :messages="$errors->get('store_type_id')" />
       </div>
     </div>
@@ -31,13 +32,13 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div>
         <x-input-label for="area" :value="__('Area')" />
-        <x-text-input id="area" name="area" type="text" :value="old('area')" autocomplete="area"
+        <x-text-input id="area" name="area" type="text" :value="old('area', $store->area)" autocomplete="area"
           placeholder="{{ __('Hemayet Uddin Rd') }}" maxlength="255" />
         <x-input-error :messages="$errors->get('area')" />
       </div>
       <div>
         <x-input-label for="city" :value="__('City')" />
-        <x-text-input id="city" name="city" type="text" :value="old('city')" autocomplete="city"
+        <x-text-input id="city" name="city" type="text" :value="old('city', $store->city)" autocomplete="city"
           placeholder="{{ __('Barishal') }}" maxlength="255" />
         <x-input-error :messages="$errors->get('city')" />
       </div>
@@ -46,7 +47,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div>
         <x-input-label for="postal_code" :value="__('Postal Code')" />
-        <x-text-input id="postal_code" name="postal_code" type="text" :value="old('postal_code')" autocomplete="postal_code"
+        <x-text-input id="postal_code" name="postal_code" type="text" :value="old('postal_code', $store->postal_code)" autocomplete="postal_code"
           placeholder="{{ __('8200') }}" maxlength="255" />
         <x-input-error :messages="$errors->get('postal_code')" />
       </div>
@@ -56,7 +57,7 @@
           <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-sm">
             +880
           </div>
-          <x-text-input id="phone" type="tel" name="phone" class="ps-14" :value="old('phone')" required
+          <x-text-input id="phone" type="tel" name="phone" class="ps-14" :value="old('phone', $store->phone)" required
             autocomplete="phone" maxlength="10" pattern="\d+" placeholder="{{ __('1234567890') }}"
             title="Valid Bangladeshi mobile number excluding +880" />
         </div>
@@ -68,19 +69,19 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
       <div>
         <x-input-label for="email" :value="__('Email')" />
-        <x-text-input id="email" name="email" type="email" :value="old('email')" autocomplete="email"
+        <x-text-input id="email" name="email" type="email" :value="old('email', $store->email)" autocomplete="email"
           maxlength="255" placeholder="{{ __('test@exampl.com') }}" />
         <x-input-error :messages="$errors->get('email')" />
       </div>
       <div>
         <x-input-label for="website" :value="__('Website')" />
-        <x-text-input id="website" name="website" type="url" :value="old('website')" autocomplete="website"
+        <x-text-input id="website" name="website" type="url" :value="old('website', $store->website)" autocomplete="website"
           maxlength="255" placeholder="{{ __('https://example.com') }}" />
         <x-input-error :messages="$errors->get('website')" />
       </div>
     </div>
 
-    <div class="mt-6" x-data="getShopGeoLocation(@js(old('latitude')) || geoLocation.latitude, @js(old('longitude')) || geoLocation.longitude)">
+    <div class="mt-6" x-data="getShopGeoLocation(@js(old('latitude', $store->latitude)) || geoLocation.latitude, @js(old('longitude', $store->longitude)) || geoLocation.longitude)">
       <div id="map" class="h-80"></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
         <div>
@@ -126,7 +127,7 @@
         </thead>
         <tbody>
           @for ($dayOfWeek = 0; $dayOfWeek < 7; $dayOfWeek++)
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" x-data="{ isClosed: Boolean(@js(old('opening_hours.' . $dayOfWeek . '.is_closed'))), opensAt: @js(old('opening_hours.' . $dayOfWeek . '.opens_at')), closesAt: @js(old('opening_hours.' . $dayOfWeek . '.closes_at')) }">
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700" x-data="{ isClosed: Boolean(@js(old('opening_hours.' . $dayOfWeek . '.is_closed', $store->openingHours[$dayOfWeek]->is_closed))), opensAt: @js(old('opening_hours.' . $dayOfWeek . '.opens_at', $store->openingHours[$dayOfWeek]->opens_at)), closesAt: @js(old('opening_hours.' . $dayOfWeek . '.closes_at', $store->openingHours[$dayOfWeek]->closes_at)) }">
               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                 {{ now()->setDaysFromStartOfWeek($dayOfWeek)->format('l') }}
               </th>
@@ -154,7 +155,7 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
-      <div x-data="imageViewer(@js(asset('images/placeholder-image.png')))">
+      <div x-data="imageViewer(@js($store->getFirstMediaUrl('store-covers', 'thumb') ?: asset('images/placeholder-image.png')))">
         <x-input-label for="cover" :value="__('Cover Image')" />
         <x-file-input id="cover" name="cover" type="file" accept=".jpg, .jpeg" @change="fileChosen" />
         <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -166,7 +167,7 @@
         <x-input-label for="additional_info" :value="__('Write more about your store')" />
         <x-textarea-input rows="9" id="additional_info" name="additional_info" autocomplete="additional_info"
           maxlength="1000"
-          placeholder="{{ __('Additional information about your store..') }}">{{ old('additional_info') }}</x-textarea-input>
+          placeholder="{{ __('Additional information about your store..') }}">{{ old('additional_info', $store->additional_info) }}</x-textarea-input>
         <x-input-error :messages="$errors->get('additional_info')" />
       </div>
     </div>

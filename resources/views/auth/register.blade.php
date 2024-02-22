@@ -34,7 +34,7 @@
       <div>
         <x-input-label for="gender" :value="__('Gender')" required="true" />
         <x-select-input id="gender" name="gender" :options="App\Enums\Gender::toCollection()" chooseOptionText="Select a Gender"
-          :selectedOption="old('gender')" required autocomplete="gender" />
+          :selectedOptionValue="old('gender')" required autocomplete="gender" />
         <x-input-error :messages="$errors->get('gender')" />
       </div>
     </div>

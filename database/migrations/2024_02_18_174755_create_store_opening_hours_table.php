@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->boolean('is_closed');
             $table->string('opens_at', 5)->nullable();
             $table->string('closes_at', 5)->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

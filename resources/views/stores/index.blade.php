@@ -14,7 +14,7 @@
         <a href="{{ route('stores.create') }}">
           <x-default-button class="inline-flex items-center">
             <x-icons.plus class="w-4 h-4 me-2 -mt-1" />
-            {{ __('Create Store') }}
+            {{ __('Create a Store') }}
           </x-default-button>
         </a>
       </div>

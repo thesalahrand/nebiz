@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->decimal('latitude', 10, 6);
             $table->decimal('longitude', 10, 6);
             $table->string('cover')->nullable();
-            $table->text('additional_text')->nullable();
+            $table->text('additional_info')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

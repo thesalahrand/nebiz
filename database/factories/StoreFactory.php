@@ -31,7 +31,7 @@ class StoreFactory extends Factory
             'website' => fake()->domainName,
             'latitude' => fake()->latitude,
             'longitude' => fake()->longitude,
-            'additional_text' => fake()->paragraph,
+            'additional_info' => fake()->paragraph,
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStoreRequest;
+use App\Http\Requests\StoreUpdateRequest;
 use App\Models\Store;
 use App\Models\StoreOpeningHour;
 use App\Models\StoreType;
@@ -45,17 +46,15 @@ class StoreController extends Controller
             $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
         }
 
-        for ($i = 0; $i < count($validated['opening_hours']); $i++) {
-            $openingHour = $validated['opening_hours'][$i];
-
-            StoreOpeningHour::create([
+        $openingHoursToInsert = [];
+        for ($dayOfWeek = 0; $dayOfWeek < count($validated['opening_hours']); $dayOfWeek++) {
+            $openingHoursToInsert[] = [
                 'store_id' => $store->id,
-                'day_of_week' => $i,
-                'is_closed' => $openingHour['is_closed'] ?? 0,
-                'opens_at' => $openingHour['opens_at'] ?? null,
-                'closes_at' => $openingHour['closes_at'] ?? null,
-            ]);
+                'day_of_week' => $dayOfWeek,
+                ...$validated['opening_hours'][$dayOfWeek]
+            ];
         }
+        StoreOpeningHour::upsert($openingHoursToInsert, uniqueBy: ['store_id', 'day_of_week'], update: ['is_closed', 'opens_at', 'closes_at']);
 
         $request->session()->flash('flash', [
             'toast-message' => [
@@ -80,15 +79,46 @@ class StoreController extends Controller
      */
     public function edit(Store $store)
     {
-        //
+        abort_if($store->user_id !== Auth::id(), 403);
+        $types = StoreType::select('id as value', 'name')->latest()->get();
+        return view('stores.edit', compact('store', 'types'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Store $store)
+    public function update(StoreUpdateRequest $request, Store $store)
     {
-        //
+        abort_if($store->user_id !== Auth::id(), 403);
+
+        $validated = $request->validated();
+        $validated['user_id'] = Auth::id();
+
+        $store->update($validated);
+
+        if (isset($validated['cover'])) {
+            $store->clearMediaCollection('store-covers');
+            $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
+        }
+
+        $openingHoursToUpdate = [];
+        for ($dayOfWeek = 0; $dayOfWeek < count($validated['opening_hours']); $dayOfWeek++) {
+            $openingHoursToUpdate[] = [
+                'store_id' => $store->id,
+                'day_of_week' => $dayOfWeek,
+                ...$validated['opening_hours'][$dayOfWeek]
+            ];
+        }
+        StoreOpeningHour::upsert($openingHoursToUpdate, uniqueBy: ['store_id', 'day_of_week'], update: ['is_closed', 'opens_at', 'closes_at']);
+
+        $request->session()->flash('flash', [
+            'toast-message' => [
+                'type' => 'success',
+                'message' => trans('Congratulations! Your store has been updated successfully.')
+            ]
+        ]);
+
+        return to_route('stores.index');
     }
 
     /**
