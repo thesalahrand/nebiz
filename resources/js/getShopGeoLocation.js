@@ -36,8 +36,8 @@ const getShopGeoLocation = (latitude, longitude) => {
             map.addControl(new mapboxgl.NavigationControl());
 
             map.on("click", (e) => {
-                this.geoLocation.latitude = e.lngLat.lat;
-                this.geoLocation.longitude = e.lngLat.lng;
+                this.geoLocation.latitude = e.lngLat.lat.toFixed(8);
+                this.geoLocation.longitude = e.lngLat.lng.toFixed(8);
 
                 marker.setLngLat([e.lngLat.lng, e.lngLat.lat]);
             });

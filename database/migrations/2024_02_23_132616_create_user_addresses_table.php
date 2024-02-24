@@ -10,21 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('stores', function (Blueprint $table) {
+        Schema::create('user_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('name');
-            $table->string('address');
-            $table->string('area')->nullable();
-            $table->string('city')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('phone');
-            $table->string('email')->nullable();
-            $table->string('website')->nullable();
+            $table->string('label');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
-            $table->string('cover')->nullable();
-            $table->text('additional_info')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('user_addresses');
     }
 };

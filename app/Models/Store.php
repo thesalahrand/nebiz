@@ -70,4 +70,14 @@ class Store extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(384);
     }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (Store $store) {
+            $store->openingHours()->delete();
+        });
+    }
 }

@@ -86,14 +86,14 @@
         <div>
           <x-input-label for="latitude" :value="__('Latitude')" required="true" />
           <x-text-input id="latitude" name="latitude" type="number" x-model.number="geoLocation.latitude"
-            autocomplete="latitude" min="-90" max="90" step="0.000001" @input.debounce="update"
+            autocomplete="latitude" min="-90" max="90" step="0.00000001" @input.debounce="update"
             placeholder="{{ __('22.7413') }}" />
           <x-input-error :messages="$errors->get('latitude')" />
         </div>
         <div>
           <x-input-label for="longitude" :value="__('Longitude')" required="true" />
           <x-text-input id="longitude" name="longitude" type="number" x-model.number="geoLocation.longitude"
-            autocomplete="longitude" min="-180" max="180" step="0.000001" @input.debounce="update"
+            autocomplete="longitude" min="-180" max="180" step="0.00000001" @input.debounce="update"
             placeholder="{{ __('80.4357') }}" />
           <x-input-error :messages="$errors->get('longitude')" />
         </div>

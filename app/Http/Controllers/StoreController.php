@@ -46,15 +46,17 @@ class StoreController extends Controller
             $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
         }
 
-        $openingHoursToInsert = [];
-        for ($dayOfWeek = 0; $dayOfWeek < count($validated['opening_hours']); $dayOfWeek++) {
-            $openingHoursToInsert[] = [
+        $validated['opening_hours'] = collect($validated['opening_hours'])->map(function ($openingHour, $dayOfWeek) use ($store) {
+            return [
                 'store_id' => $store->id,
                 'day_of_week' => $dayOfWeek,
-                ...$validated['opening_hours'][$dayOfWeek]
+                ...$openingHour,
+                'created_at' => now(),
+                'updated_at' => now()
             ];
-        }
-        StoreOpeningHour::upsert($openingHoursToInsert, uniqueBy: ['store_id', 'day_of_week'], update: ['is_closed', 'opens_at', 'closes_at']);
+        })->toArray();
+
+        StoreOpeningHour::insert($validated['opening_hours']);
 
         $request->session()->flash('flash', [
             'toast-message' => [
@@ -101,15 +103,11 @@ class StoreController extends Controller
             $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
         }
 
-        $openingHoursToUpdate = [];
-        for ($dayOfWeek = 0; $dayOfWeek < count($validated['opening_hours']); $dayOfWeek++) {
-            $openingHoursToUpdate[] = [
-                'store_id' => $store->id,
-                'day_of_week' => $dayOfWeek,
-                ...$validated['opening_hours'][$dayOfWeek]
-            ];
+        foreach ($store->openingHours as $idx => $openingHour) {
+            if ($openingHour['is_closed'] != $validated['opening_hours'][$idx]['is_closed'] || $openingHour['opens_at'] != $validated['opening_hours'][$idx]['opens_at'] || $openingHour['closes_at'] != $validated['opening_hours'][$idx]['closes_at']) {
+                $openingHour->update($validated['opening_hours'][$idx]);
+            }
         }
-        StoreOpeningHour::upsert($openingHoursToUpdate, uniqueBy: ['store_id', 'day_of_week'], update: ['is_closed', 'opens_at', 'closes_at']);
 
         $request->session()->flash('flash', [
             'toast-message' => [

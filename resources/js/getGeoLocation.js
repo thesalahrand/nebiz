@@ -10,8 +10,8 @@ const getGeoLocation = () => {
         },
 
         storeLocation(position) {
-            this.geoLocation.latitude = position.coords.latitude.toFixed(6);
-            this.geoLocation.longitude = position.coords.longitude.toFixed(6);
+            this.geoLocation.latitude = position.coords.latitude.toFixed(8);
+            this.geoLocation.longitude = position.coords.longitude.toFixed(8);
             localStorage.setItem(
                 "user-location",
                 JSON.stringify(this.geoLocation)
