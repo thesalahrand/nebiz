@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class StoreType extends Model
+class UserAddress extends Model
 {
-    public const SEED_AMOUNT = 15;
+    public const SEED_AMOUNT_PER_USER = 3;
 
     use HasFactory, SoftDeletes;
 
@@ -19,13 +19,15 @@ class StoreType extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'photo',
-        'additional_info'
+        'user_id',
+        'label',
+        'latitude',
+        'longitude',
+        'is_current'
     ];
 
-    public function stores(): HasMany
+    public function user(): BelongsTo
     {
-        return $this->hasMany(Store::class);
+        return $this->belongsTo(User::class);
     }
 }

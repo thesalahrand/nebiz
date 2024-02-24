@@ -17,15 +17,13 @@
       <div id="dropdown"
         class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-          @guest
-            <li>
-              <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Kindly <a
-                  href="{{ route('home') }}"
-                  class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline">login</a> to
-                manage
-                your addresses</span>
-            </li>
-          @endguest
+          <li>
+            <a
+              class="w-full inline-flex items-center cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+              <x-icons.plus class="w-4 h-4 me-2 -mt-1" />
+              {{ __('Add an address') }}
+            </a>
+          </li>
         </ul>
       </div>
 

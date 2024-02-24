@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('label');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
+            $table->boolean('is_current')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

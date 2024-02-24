@@ -60,6 +60,11 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         return $this->hasMany(Store::class);
     }
 
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(UserAddress::class, 'user_id');
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('avatar')
