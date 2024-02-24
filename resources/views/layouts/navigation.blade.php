@@ -6,46 +6,34 @@
       <span class="self-center hidden font-bold sm:inline sm:text-xl whitespace-nowrap text-gray-900 dark:text-white">
         {{ config('app.name', 'Laravel') }}</span>
     </a>
-    {{-- <form class="w-2/5">
-      <div class="flex">
-        <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search
-          Type</label>
-        <button id="dropdown-button" data-dropdown-toggle="dropdown"
-          class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
-          type="button">
-          All categories
-          <x-icons.arrow-down class="w-2.5 h-2.5 ms-2.5"></x-icons.arrow-down>
-        </button>
-        <div id="dropdown"
-          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+    <div class="w-1/3 relative">
+      <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+        class="w-full text-sm leading-5 font-medium text-blue-800 dark:text-blue-800 bg-blue-100 rounded-full py-2.5 px-4 flex justify-between items-center hover:bg-blue-100/50"
+        type="button">
+        <span x-text="`Location: ${geoLocation.placeName}`"
+          class="text-left whitespace-nowrap text-ellipsis overflow-hidden"></span>
+        <x-icons.arrow-down class="shrink-0 w-3.5 ms-2"></x-icons.arrow-down>
+      </button>
+      <div id="dropdown"
+        class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+          @guest
             <li>
-              <button type="button"
-                class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Products</button>
+              <span class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Kindly <a
+                  href="{{ route('home') }}"
+                  class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline">login</a> to
+                manage
+                your addresses</span>
             </li>
-            <li>
-              <button type="button"
-                class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Services</button>
-            </li>
-          </ul>
-        </div>
-        <div class="relative w-full">
-          <input type="search" id="search-dropdown"
-            class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
-            placeholder="Search products/services in your locality..." required>
-          <button type="submit"
-            class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <x-icons.search class="w-4 h-4"></x-icons.search>
-            <span class="sr-only">Search</span>
-          </button>
-        </div>
+          @endguest
+        </ul>
       </div>
-    </form> --}}
+
+    </div>
     <div class="flex items-center">
       <a href="{{ route('stores.create') }}">
         <x-outline-button>Create a Store</x-outline-button>
       </a>
-
       @auth
         <div>
           <button type="button"
