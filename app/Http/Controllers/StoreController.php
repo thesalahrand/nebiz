@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class StoreController extends Controller
 {
@@ -38,25 +39,26 @@ class StoreController extends Controller
     public function store(StoreStoreRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $validated['user_id'] = Auth::id();
 
-        $store = Store::create($validated);
+        DB::transaction(function () use ($validated) {
+            $store = Store::create($validated);
 
-        if (isset($validated['cover'])) {
-            $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
-        }
+            if (isset($validated['cover'])) {
+                $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
+            }
 
-        $validated['opening_hours'] = collect($validated['opening_hours'])->map(function ($openingHour, $dayOfWeek) use ($store) {
-            return [
-                'store_id' => $store->id,
-                'day_of_week' => $dayOfWeek,
-                ...$openingHour,
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
-        })->toArray();
+            $validated['opening_hours'] = collect($validated['opening_hours'])->map(function ($openingHour, $dayOfWeek) use ($store) {
+                return [
+                    'store_id' => $store->id,
+                    'day_of_week' => $dayOfWeek,
+                    ...$openingHour,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            })->toArray();
 
-        StoreOpeningHour::insert($validated['opening_hours']);
+            StoreOpeningHour::insert($validated['opening_hours']);
+        });
 
         $request->session()->flash('flash', [
             'toast-message' => [
@@ -94,20 +96,21 @@ class StoreController extends Controller
         abort_if($store->user_id !== Auth::id(), 403);
 
         $validated = $request->validated();
-        $validated['user_id'] = Auth::id();
 
-        $store->update($validated);
+        DB::transaction(function () use ($store, $validated) {
+            $store->update($validated);
 
-        if (isset($validated['cover'])) {
-            $store->clearMediaCollection('store-covers');
-            $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
-        }
-
-        foreach ($store->openingHours as $idx => $openingHour) {
-            if ($openingHour['is_closed'] != $validated['opening_hours'][$idx]['is_closed'] || $openingHour['opens_at'] != $validated['opening_hours'][$idx]['opens_at'] || $openingHour['closes_at'] != $validated['opening_hours'][$idx]['closes_at']) {
-                $openingHour->update($validated['opening_hours'][$idx]);
+            if (isset($validated['cover'])) {
+                $store->clearMediaCollection('store-covers');
+                $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
             }
-        }
+
+            foreach ($store->openingHours as $idx => $openingHour) {
+                if ($openingHour['is_closed'] != $validated['opening_hours'][$idx]['is_closed'] || $openingHour['opens_at'] != $validated['opening_hours'][$idx]['opens_at'] || $openingHour['closes_at'] != $validated['opening_hours'][$idx]['closes_at']) {
+                    $openingHour->update($validated['opening_hours'][$idx]);
+                }
+            }
+        });
 
         $request->session()->flash('flash', [
             'toast-message' => [
@@ -130,7 +133,7 @@ class StoreController extends Controller
         $request->session()->flash('flash', [
             'toast-message' => [
                 'type' => 'success',
-                'message' => trans('The store has been deleted successfully.')
+                'message' => trans('Your store has been deleted successfully.')
             ]
         ]);
 

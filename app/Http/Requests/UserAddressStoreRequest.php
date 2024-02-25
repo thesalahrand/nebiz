@@ -28,4 +28,12 @@ class UserAddressStoreRequest extends FormRequest
             'is_current' => ['sometimes', 'in:on']
         ];
     }
+
+    public function validated($key = null, $default = null)
+    {
+        return array_merge(parent::validated(), [
+            'user_id' => $this->user()->id,
+            'is_current' => $this->has('is_current') ? 1 : 0
+        ]);
+    }
 }

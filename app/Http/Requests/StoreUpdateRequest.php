@@ -44,10 +44,8 @@ class StoreUpdateRequest extends FormRequest
         ];
     }
 
-    /**
-     * Handle a passed validation attempt.
-     */
-    protected function passedValidation(): void
+
+    public function validated($key = null, $default = null)
     {
         $openingHours = $this->input('opening_hours');
 
@@ -57,8 +55,6 @@ class StoreUpdateRequest extends FormRequest
             $openingHour['closes_at'] = $openingHour['closes_at'] ?? null;
         }
 
-        $this->validator->setData(
-            ['opening_hours' => $openingHours] + $this->validator->getData()
-        );
+        return array_merge(parent::validated(), ['opening_hours' => $openingHours]);
     }
 }

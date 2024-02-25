@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserAddressController extends Controller
 {
@@ -26,14 +27,14 @@ class UserAddressController extends Controller
     public function store(UserAddressStoreRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $validated['user_id'] = Auth::id();
-        $validated['is_current'] = isset($validated['is_current']) ? 1 : 0;
 
-        if ($validated['is_current']) {
-            Auth::user()->addresses()->update(['is_current' => 0]);
-        }
+        DB::transaction(function () use ($validated) {
+            if ($validated['is_current'] === 1) {
+                Auth::user()->addresses()->update(['is_current' => 0]);
+            }
 
-        UserAddress::create($validated);
+            UserAddress::create($validated);
+        });
 
         $request->session()->flash('flash', [
             'toast-message' => [
@@ -51,18 +52,19 @@ class UserAddressController extends Controller
         return view('addresses.edit', compact('address'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UserAddressUpdateRequest $request, UserAddress $address)
     {
         abort_if($address->user_id !== Auth::id(), 403);
 
         $validated = $request->validated();
-        $validated['user_id'] = Auth::id();
-        $validated['is_current'] = isset($validated['is_current']) ? 1 : 0;
 
-        $address->update($validated);
+        DB::transaction(function () use ($validated, $address) {
+            if ($validated['is_current'] === 1) {
+                Auth::user()->addresses()->whereNot('id', $address->id)->update(['is_current' => 0]);
+            }
+
+            $address->update($validated);
+        });
 
         $request->session()->flash('flash', [
             'toast-message' => [
@@ -82,6 +84,25 @@ class UserAddressController extends Controller
             'toast-message' => [
                 'type' => 'success',
                 'message' => trans('Your address has been deleted successfully.')
+            ]
+        ]);
+
+        return back();
+    }
+
+    public function changeCurrent(Request $request, UserAddress $address): RedirectResponse
+    {
+        abort_if($address->user_id !== Auth::id(), 403);
+
+        DB::transaction(function () use ($address) {
+            Auth::user()->addresses()->whereNot('id', $address->id)->update(['is_current' => 0]);
+            $address->update(['is_current' => 1]);
+        });
+
+        $request->session()->flash('flash', [
+            'toast-message' => [
+                'type' => 'success',
+                'message' => trans('Your current address has been changed successfully.')
             ]
         ]);
 

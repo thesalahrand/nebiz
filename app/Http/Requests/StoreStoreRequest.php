@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\StoreType;
+use Illuminate\Support\Facades\Auth;
 
 class StoreStoreRequest extends FormRequest
 {
@@ -44,10 +45,8 @@ class StoreStoreRequest extends FormRequest
         ];
     }
 
-    /**
-     * Handle a passed validation attempt.
-     */
-    protected function passedValidation(): void
+
+    public function validated($key = null, $default = null)
     {
         $openingHours = $this->input('opening_hours');
 
@@ -57,8 +56,6 @@ class StoreStoreRequest extends FormRequest
             $openingHour['closes_at'] = $openingHour['closes_at'] ?? null;
         }
 
-        $this->validator->setData(
-            ['opening_hours' => $openingHours] + $this->validator->getData()
-        );
+        return array_merge(parent::validated(), ['user_id' => Auth::id(), 'opening_hours' => $openingHours]);
     }
 }

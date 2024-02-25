@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::resource('stores', StoreController::class);
     Route::resource('addresses', UserAddressController::class);
+    Route::patch('addresses/{address}/change-current', [UserAddressController::class, 'changeCurrent'])->name('addresses.change-current');
 });
 
 // Route::get('/dashboard', function () {

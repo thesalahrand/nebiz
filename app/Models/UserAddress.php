@@ -36,4 +36,9 @@ class UserAddress extends Model
     {
         $query->where('is_current', 1);
     }
+
+    public function scopeNotCurrent(Builder $query): void
+    {
+        $query->where('is_current', 0);
+    }
 }
