@@ -1,9 +1,10 @@
 @php
-  $userAddresses = $currentUserAddress = null;
+  $userAddresses = [];
+  $currentUserAddress = null;
 
   if (Auth::check()) {
-      $userAddresses = Auth::user()->addresses;
-      $currentUserAddress = Auth::user()->addresses()->current()->first();
+      $userAddresses = Auth::user()->addresses()->orderByDesc('is_current')->get();
+      $currentUserAddress = Auth::user()->addresses()->current()?->first();
   }
 @endphp
 
@@ -31,6 +32,15 @@
       <div id="user-addresses-dropdown"
         class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+          @foreach ($userAddresses as $userAddress)
+            <li>
+              <a
+                class="w-full inline-flex items-center cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <x-icons.arrow-path class="shrink-0 w-4 me-2" />
+                {{ $userAddress->label }}
+              </a>
+            </li>
+          @endforeach
           <li>
             <a
               class="w-full inline-flex items-center cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
