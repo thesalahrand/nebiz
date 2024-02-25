@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <div class="mt-6" x-data="getShopGeoLocation(@js(old('latitude')) || geoLocation.latitude, @js(old('longitude')) || geoLocation.longitude)">
+    <div class="mt-6" x-data="geoLocationPicker(@js(old('latitude')) || geoLocation.latitude, @js(old('longitude')) || geoLocation.longitude)">
       <div id="map" class="h-80"></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
         <div>
@@ -103,9 +103,6 @@
       </div>
     </div>
 
-    <div class="mt-6">
-
-    </div>
     <div class="relative overflow-x-auto">
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

@@ -1,3 +1,12 @@
+@php
+  $userAddresses = $currentUserAddress = null;
+
+  if (Auth::check()) {
+      $userAddresses = Auth::user()->addresses;
+      $currentUserAddress = Auth::user()->addresses()->current()->first();
+  }
+@endphp
+
 <nav
   class="bg-white dark:bg-gray-900 fixed w-full h-20 z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
   <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto h-full p-4">
@@ -7,14 +16,19 @@
         {{ config('app.name', 'Laravel') }}</span>
     </a>
     <div class="w-1/3 relative">
-      <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+      <button data-dropdown-toggle="user-addresses-dropdown"
         class="w-full text-sm leading-5 font-medium text-blue-800 dark:text-blue-800 bg-blue-100 rounded-full py-2.5 px-4 flex justify-between items-center hover:bg-blue-100/50"
         type="button">
-        <span x-text="`Location: ${geoLocation.placeName}`"
-          class="text-left whitespace-nowrap text-ellipsis overflow-hidden"></span>
+        @if ($currentUserAddress)
+          <span class="text-left whitespace-nowrap text-ellipsis overflow-hidden">Location:
+            {{ $currentUserAddress->label }}</span>
+        @else
+          <span x-text="`Location: ${geoLocation.placeName}`"
+            class="text-left whitespace-nowrap text-ellipsis overflow-hidden"></span>
+        @endif
         <x-icons.arrow-down class="shrink-0 w-3.5 ms-2"></x-icons.arrow-down>
       </button>
-      <div id="dropdown"
+      <div id="user-addresses-dropdown"
         class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700">
         <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
           <li>
@@ -26,7 +40,6 @@
           </li>
         </ul>
       </div>
-
     </div>
     <div class="flex items-center">
       <a href="{{ route('stores.create') }}">
@@ -63,6 +76,11 @@
                 <a href="{{ route('profile.edit') }}"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                   role="menuitem">{{ __('Edit Profile') }}</a>
+              </li>
+              <li>
+                <a href="{{ route('addresses.index') }}"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                  role="menuitem">{{ __('My Addresses') }}</a>
               </li>
               <li>
                 <a href="{{ route('stores.index') }}"

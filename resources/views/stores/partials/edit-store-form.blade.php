@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    <div class="mt-6" x-data="getShopGeoLocation(@js(old('latitude', $store->latitude)) || geoLocation.latitude, @js(old('longitude', $store->longitude)) || geoLocation.longitude)">
+    <div class="mt-6" x-data="geoLocationPicker(@js(old('latitude', $store->latitude)) || geoLocation.latitude, @js(old('longitude', $store->longitude)) || geoLocation.longitude)">
       <div id="map" class="h-80"></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
         <div>

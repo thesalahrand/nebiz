@@ -6,7 +6,7 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 let map, marker;
 
-const getShopGeoLocation = (latitude, longitude) => {
+const geoLocationPicker = (latitude, longitude) => {
     return {
         geoLocation: { latitude, longitude },
 
@@ -55,4 +55,4 @@ const getShopGeoLocation = (latitude, longitude) => {
     };
 };
 
-export default getShopGeoLocation;
+export default geoLocationPicker;
