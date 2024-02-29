@@ -15,8 +15,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class User extends Authenticatable implements MustVerifyEmail, HasMedia
 {
-    public const SEED_AMOUNT = 10;
-
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, InteractsWithMedia;
 
     /**

@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserAddress extends Model
 {
-    public const SEED_AMOUNT_PER_USER = 3;
-
     use HasFactory, SoftDeletes;
 
     /**

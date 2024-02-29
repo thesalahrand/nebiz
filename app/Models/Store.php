@@ -15,7 +15,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Store extends Model implements HasMedia
 {
-    public const SEED_AMOUNT_PER_STORE_TYPE = 3;
     private const MY_FIXED_LATITUDE = 22.711555;
     private const MY_FIXED_LONGITUDE = 90.3609395;
 

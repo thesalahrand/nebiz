@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StoreOpeningHour extends Model
 {
-    public const SEED_AMOUNT_PER_STORE = 7;
-
     use HasFactory, SoftDeletes;
 
     /**

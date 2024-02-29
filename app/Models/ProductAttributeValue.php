@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StoreType extends Model
+class ProductAttributeValue extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -17,13 +17,13 @@ class StoreType extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'product_attribute_id',
         'name',
-        'photo',
         'additional_info'
     ];
 
-    public function stores(): HasMany
+    public function attribute(): BelongsTo
     {
-        return $this->hasMany(Store::class);
+        return $this->belongsTo(ProductAttribute::class, 'product_attribute_id');
     }
 }

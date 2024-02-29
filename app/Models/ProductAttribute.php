@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StoreType extends Model
+class ProductAttribute extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -18,12 +18,11 @@ class StoreType extends Model
      */
     protected $fillable = [
         'name',
-        'photo',
         'additional_info'
     ];
 
-    public function stores(): HasMany
+    public function values(): HasMany
     {
-        return $this->hasMany(Store::class);
+        return $this->hasMany(ProductAttributeValue::class, 'product_attribute_id');
     }
 }

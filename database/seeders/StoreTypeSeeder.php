@@ -15,9 +15,9 @@ class StoreTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        StoreType::factory()->count(StoreType::SEED_AMOUNT)
-            ->has(Store::factory()->count(Store::SEED_AMOUNT_PER_STORE_TYPE)
-                ->has(StoreOpeningHour::factory()->count(StoreOpeningHour::SEED_AMOUNT_PER_STORE), 'openingHours'))
+        StoreType::factory()->count(15)
+            ->has(Store::factory()->count(3)
+                ->has(StoreOpeningHour::factory()->count(7), 'openingHours'))
             ->create();
     }
 }

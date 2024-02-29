@@ -24,7 +24,7 @@ class UserAddressFactory extends Factory
             'label' => fake()->sentence,
             'latitude' => fake()->latitude,
             'longitude' => fake()->longitude,
-            'is_current' => (static::$counter++ % UserAddress::SEED_AMOUNT_PER_USER) === 1 ? 1 : 0
+            'is_current' => (static::$counter++ % 3) === 1 ? 1 : 0
         ];
     }
 }

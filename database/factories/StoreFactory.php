@@ -19,7 +19,7 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => fake()->numberBetween(1, User::SEED_AMOUNT),
+            'user_id' => fake()->numberBetween(1, User::count()),
             'store_type_id' => StoreType::factory(),
             'name' => fake()->company,
             'address' => fake()->streetAddress,

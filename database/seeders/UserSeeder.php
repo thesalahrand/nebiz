@@ -14,10 +14,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->count(User::SEED_AMOUNT / 2)->create();
+        User::factory()->count(5)->create();
 
-        User::factory()->count(User::SEED_AMOUNT / 2)->has(
-            UserAddress::factory()->count(UserAddress::SEED_AMOUNT_PER_USER),
+        User::factory()->count(5)->has(
+            UserAddress::factory()->count(3),
             'addresses'
         )->create();
     }
