@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\StoreType>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Brand>
  */
-class StoreTypeFactory extends Factory
+class BrandFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class StoreTypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => ucwords(fake()->words(2, true)),
+            'name' => ucfirst(fake()->word()),
             'additional_info' => fake()->sentence()
         ];
     }
