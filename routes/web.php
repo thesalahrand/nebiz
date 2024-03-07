@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -26,8 +27,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/', 'destroy')->name('destroy');
     });
     Route::resource('stores', StoreController::class);
-    Route::resource('addresses', UserAddressController::class);
+    Route::resource('stores.products', ProductController::class);
     Route::patch('addresses/{address}/change-current', [UserAddressController::class, 'changeCurrent'])->name('addresses.change-current');
+    Route::resource('addresses', UserAddressController::class);
 });
 
 // Route::get('/dashboard', function () {

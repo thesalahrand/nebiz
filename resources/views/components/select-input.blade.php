@@ -11,8 +11,17 @@
 ]) !!}>
   <option value="" {{ $selectedOptionValue == '' ? 'selected' : '' }}>{{ __($chooseOptionText) }}</option>
   @foreach ($options as $option)
-    <option {{ $selectedOptionValue == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}"
-      class="capitalize">
-      {{ $option['name'] }}</option>
+    @if (isset($option['label']))
+      <optgroup label="{{ $option['label'] }}">
+        @foreach ($option['options'] as $option)
+          <option {{ $selectedOptionValue == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">
+            {{ $option['name'] }}</option>
+        @endforeach
+      </optgroup>
+    @else
+      <option {{ $selectedOptionValue == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}"
+        class="capitalize">
+        {{ $option['name'] }}</option>
+    @endif
   @endforeach
 </select>
