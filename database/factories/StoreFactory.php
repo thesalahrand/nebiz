@@ -11,6 +11,8 @@ use App\Models\StoreType;
  */
 class StoreFactory extends Factory
 {
+    private static int $storesPerUser = 5;
+    private static int $counter = 1;
     /**
      * Define the model's default state.
      *
@@ -19,7 +21,7 @@ class StoreFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => fake()->numberBetween(1, User::count()),
+            'user_id' => ceil(static::$counter++ / static::$storesPerUser),
             'store_type_id' => StoreType::factory(),
             'name' => fake()->company,
             'address' => fake()->streetAddress,

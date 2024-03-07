@@ -19,12 +19,14 @@ class UserAddressFactory extends Factory
      */
     public function definition(): array
     {
+        $isThirdAddressOfUser = (static::$counter++ % 3) === 1;
+
         return [
             'user_id' => User::factory(),
             'label' => fake()->sentence,
             'latitude' => fake()->latitude,
             'longitude' => fake()->longitude,
-            'is_current' => (static::$counter++ % 3) === 1 ? 1 : 0
+            'is_current' => $isThirdAddressOfUser ? 1 : 0
         ];
     }
 }

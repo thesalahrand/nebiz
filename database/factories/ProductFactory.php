@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Enums\Unit;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Store;
 use App\Models\Brand;
 
 /**
@@ -19,8 +19,10 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $randStoreIdOfFirstUser = User::find(1)->stores->pluck('id')->shuffle()->first();
+
         return [
-            'store_id' => fake()->numberBetween(1, Store::count()),
+            'store_id' => $randStoreIdOfFirstUser,
             'brand_id' => fake()->numberBetween(1, Brand::count()),
             'name' => fake()->words(2, true),
             'slug' => fake()->unique(true)->slug,
