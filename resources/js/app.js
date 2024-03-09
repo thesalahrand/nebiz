@@ -7,7 +7,10 @@ import customModalHandler from "./customModalHandler";
 import getGeoLocation from "./getGeoLocation";
 import geoLocationPicker from "./geoLocationPicker";
 
-import Alpine from "alpinejs";
+import {
+    Livewire,
+    Alpine,
+} from "../../vendor/livewire/livewire/dist/livewire.esm";
 
 window.Alpine = Alpine;
 
@@ -17,4 +20,4 @@ Alpine.data("customModalHandler", customModalHandler);
 Alpine.data("getGeoLocation", getGeoLocation);
 Alpine.data("geoLocationPicker", geoLocationPicker);
 
-Alpine.start();
+Livewire.start();

@@ -12,6 +12,6 @@
 
   <div
     class="mt-6 p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
-    @include('stores.products.partials.create-product-form')
+    <livewire:create-product-form />
   </div>
 </x-app-layout>

@@ -20,6 +20,7 @@
   <link rel="shortcut icon" href="https://laravel.com//img/favicon/favicon.ico">
   <meta name="msapplication-TileColor" content="#ff2d20">
 
+  @livewireStyles
   <!-- Scripts -->
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -33,6 +34,8 @@
     </div>
   </main>
   <x-toast-message />
+
+  @livewireScriptConfig
 </body>
 
 </html>
