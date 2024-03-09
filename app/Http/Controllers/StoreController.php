@@ -43,7 +43,7 @@ class StoreController extends Controller
         DB::transaction(function () use ($validated) {
             $store = Store::create($validated);
 
-            if (isset($validated['cover'])) {
+            if (isset ($validated['cover'])) {
                 $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
             }
 
@@ -96,11 +96,12 @@ class StoreController extends Controller
         abort_if($store->user_id !== Auth::id(), 403);
 
         $validated = $request->validated();
+        dd($validated);
 
         DB::transaction(function () use ($store, $validated) {
             $store->update($validated);
 
-            if (isset($validated['cover'])) {
+            if (isset ($validated['cover'])) {
                 $store->clearMediaCollection('store-covers');
                 $store->addMediaFromRequest('cover')->toMediaCollection('store-covers');
             }
