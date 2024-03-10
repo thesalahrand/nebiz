@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\GetProductVariantsFromSession;
-use App\Http\Requests\ProductStoreRequest;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductAttribute;
@@ -18,17 +16,40 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Store $store)
     {
-        // $stores = Store::with('type')->where('user_id', Auth::id())->latest()->get();
-        // return view('stores.index', compact('stores'));
+        $products = Product::with(['brand', 'skus'])
+            ->where('store_id', $store->id)
+            ->latest()
+            ->paginate()
+            ->withQueryString()
+            ->through(function ($product) {
+                $minPrice = $product->skus->min(fn($sku) => $sku['price']);
+                $maxPrice = $product->skus->max(fn($sku) => $sku['price']);
+                $price_range = trans('N/R');
+
+                if ($minPrice === $maxPrice)
+                    $price_range = $minPrice . ' ' . trans('TK');
+                else if ($minPrice !== $maxPrice)
+                    $price_range = $minPrice . ' - ' . $maxPrice . ' ' . trans('TK');
+
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'brand' => $product?->brand?->name ?? trans('N/R'),
+                    'variants_count' => $product->skus->count(),
+                    'price_range' => $price_range,
+                    'updated_at' => $product->updated_at->format('Y-m-d H:i A')
+                ];
+            });
+
+        return view('stores.products.index', compact('store', 'products'));
     }
 
-    public function create(Request $request, Store $store, GetProductVariantsFromSession $getProductVariantsFromSession): View
+    public function create(Request $request, Store $store): View
     {
         abort_if($store->user_id !== Auth::id(), 403);
 
-        $variants = $getProductVariantsFromSession->setActionType($getProductVariantsFromSession::ACTION_CREATE)->execute();
         $brands = Brand::select('id as value', 'name')->latest()->get()->toArray();
         $product_attributes = ProductAttribute::select('id as value', 'name')->latest()->get()->toArray();
 
