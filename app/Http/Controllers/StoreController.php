@@ -128,8 +128,10 @@ class StoreController extends Controller
      */
     public function destroy(Request $request, Store $store): RedirectResponse
     {
-        $store->clearMediaCollection('store-covers');
-        $store->delete();
+        DB::transaction(function () use ($store) {
+            $store->clearMediaCollection('store-covers');
+            $store->delete();
+        });
 
         $request->session()->flash('flash', [
             'toast-message' => [

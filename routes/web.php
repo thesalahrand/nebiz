@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/', 'destroy')->name('destroy');
     });
     Route::resource('stores', StoreController::class);
-    Route::resource('stores.products', ProductController::class);
+    Route::resource('stores.products', ProductController::class)->except('store', 'update', 'show');
     Route::patch('addresses/{address}/change-current', [UserAddressController::class, 'changeCurrent'])->name('addresses.change-current');
     Route::resource('addresses', UserAddressController::class);
 });

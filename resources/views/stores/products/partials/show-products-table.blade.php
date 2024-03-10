@@ -36,10 +36,10 @@
             <div class="flex items-center space-x-1">
               {{-- <x-td-action-button href="{{ route('stores.edit', $store->id) }}">
                 <x-icons.pencil class="w-5 h-5" />
-              </x-td-action-button>
-              <x-td-action-button class="cursor-pointer" @click="show, idToDelete = {{ $store->id }}">
-                <x-icons.trash class="w-5 h-5" />
               </x-td-action-button> --}}
+              <x-td-action-button class="cursor-pointer" @click="show, idToDelete = {{ $product['id'] }}">
+                <x-icons.trash class="w-5 h-5" />
+              </x-td-action-button>
             </div>
           </td>
         </tr>

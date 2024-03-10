@@ -18,6 +18,10 @@
           </td>
           <td class="px-6 py-4">
             {{ $store->name }}
+            <div class="flex flex-wrap items-center space-x-2 mt-2">
+              <a href="{{ route('stores.products.index', $store->id) }}"
+                class="textfont-medium text-blue-600 underline dark:text-blue-500 ">{{ __('Manage Products') }}</a>
+            </div>
           </td>
           <td class="px-6 py-4">
             {{ $store->type->name }}

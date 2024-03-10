@@ -1,4 +1,4 @@
-@props(['htmlId', 'title', 'deleteRouteName'])
+@props(['htmlId', 'title', 'deleteRoutePrefix'])
 
 <template x-teleport="body">
   <div id="{{ $htmlId }}" tabindex="-1"
@@ -12,7 +12,7 @@
           <x-icons.close class="w-3 h-3" />
           <span class="sr-only">Close modal</span>
         </button>
-        <form :action="'{{ route($deleteRouteName, '') }}/' + idToDelete" class="p-4 md:p-5 text-center" method="post">
+        <form :action="'{{ $deleteRoutePrefix }}' + idToDelete" class="p-4 md:p-5 text-center" method="post">
           @csrf
           @method('DELETE')
           <x-icons.question-mark-circle class="mx-auto mb-4 text-gray-400 w-16 h-16 dark:text-gray-200" />

@@ -149,7 +149,6 @@
             <tbody>
               @forelse ($variant['attributes'] as $attribute_idx => $attribute)
                 <tr wire:key="{{ $attribute_idx }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  {{ json_encode($attribute['values']) }}
                   <td class="px-6 py-4">
                     <x-select-input
                       name="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id' : 'default_variant.attributes.' . $attribute_idx . '.id' }}"
@@ -196,8 +195,8 @@
 
         <x-outline-button type="button" class="mt-6" wire:click="addAttributeToVariant({{ $idx }})">
           {{ __('Add
-                                                                                                                                                                                              an
-                                                                                                                                                                                              attribute') }}</x-outline-button>
+                                                                                                                                                                                                        an
+                                                                                                                                                                                                        attribute') }}</x-outline-button>
       </div>
     @endforeach
 

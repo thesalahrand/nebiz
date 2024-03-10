@@ -10,10 +10,11 @@
   <x-breadcrumb :breadcrumbItems="$breadcrumbItems" />
 
   <div x-data="{ idToDelete: '' }" class="mt-6">
-    <div x-data="customModalHandler('#confirm-store-deletion-modal', false)">
-      {{-- <x-confirm-deletion-modal htmlId="confirm-store-deletion-modal" deleteRouteName="stores.destroy"
-          title="Are you sure you want to delete your store? Doing so will delete all of your products, services and ratings too." />
-   --}}
+    <div x-data="customModalHandler('#confirm-product-deletion-modal', false)">
+      <x-confirm-deletion-modal htmlId="confirm-product-deletion-modal"
+        deleteRoutePrefix="/stores/{{ $store->id }}/products/"
+        title="Are you sure you want to delete this store? Doing so will delete all of your product variants too." />
+
       <div class="mb-4 flex flex-1 flex-col sm:flex-row space-y-2 sm:space-y-0 justify-between sm:items-center">
         <h1 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('My Products') }} </h1>
         <a href="{{ route('stores.products.create', $store->id) }}">

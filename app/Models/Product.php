@@ -47,4 +47,15 @@ class Product extends Model
     {
         return $this->hasMany(Sku::class);
     }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (Product $product) {
+            $product->skus->each(fn($sku) => $sku->productAttributeValues()->detach());
+            $product->skus()->delete();
+        });
+    }
 }

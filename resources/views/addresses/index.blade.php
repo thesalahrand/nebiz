@@ -1,12 +1,15 @@
 <x-app-layout>
   @php
-    $breadcrumbItems = collect([['name' => __('Home'), 'link' => route('home')], ['name' => __('Addresses'), 'link' => route('addresses.index')]]);
+    $breadcrumbItems = collect([
+        ['name' => __('Home'), 'link' => route('home')],
+        ['name' => __('Addresses'), 'link' => route('addresses.index')],
+    ]);
   @endphp
   <x-breadcrumb :breadcrumbItems="$breadcrumbItems" />
 
   <div x-data="{ idToDelete: '' }" class="mt-6">
     <div x-data="customModalHandler('#confirm-address-deletion-modal', false)">
-      <x-confirm-deletion-modal htmlId="confirm-address-deletion-modal" deleteRouteName="addresses.destroy"
+      <x-confirm-deletion-modal htmlId="confirm-address-deletion-modal" deleteRoutePrefix="/addresses/"
         title="Are you sure you want to delete your address? This action cannot be undone." />
 
       <div class="mb-4 flex flex-1 flex-col sm:flex-row space-y-2 sm:space-y-0 justify-between sm:items-center">

@@ -55,4 +55,21 @@ class ProductController extends Controller
 
         return view('stores.products.create', compact('store', 'brands', 'product_attributes'));
     }
+
+    public function destroy(Request $request, Store $store, Product $product): RedirectResponse
+    {
+        DB::transaction(function () use ($product) {
+            $product->skus->each(fn($sku) => $sku->clearMediaCollection('sku-photos'));
+            $product->delete();
+        });
+
+        $request->session()->flash('flash', [
+            'toast-message' => [
+                'type' => 'success',
+                'message' => trans('Your product has been deleted successfully.')
+            ]
+        ]);
+
+        return back();
+    }
 }

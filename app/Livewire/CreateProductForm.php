@@ -136,7 +136,6 @@ class CreateProductForm extends Component
         abort_if($this->store->user_id !== Auth::id(), 403);
 
         $validated = $this->validate();
-        // dd($validated);
 
         $productService->store($validated, $this->store);
 
@@ -147,7 +146,7 @@ class CreateProductForm extends Component
             ]
         ]);
 
-        $this->redirectRoute('stores.products.create', $this->store->id);
+        $this->redirectRoute('stores.products.index', $this->store->id);
     }
 
     public function render()
