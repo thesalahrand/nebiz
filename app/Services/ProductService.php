@@ -28,8 +28,13 @@ class ProductService
             ...(collect($this->validated['default_variant'])->except('store_id', 'brand_id', 'name', 'unit_name', 'additional_info')->toArray())
         ]);
 
-        if (isset($this->validated['default_variant']['image'])) {
+        if (isset($this->validated['default_variant']['image']) && $this->validated['default_variant']['image'] !== '') {
             $sku->addMedia($this->validated['default_variant']['image'])->toMediaCollection('sku-photos');
+        }
+
+        if (isset($this->validated['default_variant']['attributes'])) {
+            $attributeValueIds = collect($this->validated['default_variant']['attributes'])->map(fn($el) => $el['value_id'])->toArray();
+            $sku->productAttributeValues()->attach($attributeValueIds);
         }
     }
 
@@ -43,8 +48,13 @@ class ProductService
                     ...$otherVariant
                 ]);
 
-                if (isset($otherVariant['image'])) {
+                if (isset($otherVariant['image']) && $otherVariant['image'] !== '') {
                     $sku->addMedia($otherVariant['image'])->toMediaCollection('sku-photos');
+                }
+
+                if (isset($otherVariant['attributes'])) {
+                    $attributeValueIds = collect($otherVariant['attributes'])->map(fn($el) => $el['value_id'])->toArray();
+                    $sku->productAttributeValues()->attach($attributeValueIds);
                 }
             }
         }

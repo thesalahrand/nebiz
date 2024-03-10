@@ -1,6 +1,8 @@
 <section class="w-full max-w-3xl">
   <form method="post" wire:submit="save" enctype="multipart/form-data" x-data="{ currVariantIdx: 0 }">
+
     <h5 class="text-xl font-semibold text-gray-900 dark:text-white"> {{ __('Create a Product') }} </h5>
+    {{-- Variant Tabs  --}}
     <div
       class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 mt-6">
       <ul class="flex flex-wrap -mb-px">
@@ -128,6 +130,7 @@
           </template>
         </div>
 
+        {{-- Attributes  --}}
         <div class="relative overflow-x-auto mt-6">
           <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -146,28 +149,37 @@
             <tbody>
               @forelse ($variant['attributes'] as $attribute_idx => $attribute)
                 <tr wire:key="{{ $attribute_idx }}" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                  {{ json_encode($attribute['values']) }}
                   <td class="px-6 py-4">
-                    <x-select-input name="default_variant.brand_id" :options="collect($product_attributes)"
-                      chooseOptionText="Select an Attribute"
-                      autocomplete="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attribute.' . $attribute_idx . '.selected_id' : 'default_variant.attributes.selected_id' }}"
-                      wire:model="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attribute.' . $attribute_idx . '.selected_id' : 'default_variant.attributes.' . $attribute_idx . '.selected_id' }}"
-                      x-on:change="$wire.onChange({{ $idx }})" />
+                    <x-select-input
+                      name="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id' : 'default_variant.attributes.' . $attribute_idx . '.id' }}"
+                      :options="collect($product_attributes)" chooseOptionText="Select an Attribute"
+                      autocomplete="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id' : 'default_variant.attributes.' . $attribute_idx . '.id' }}"
+                      wire:model.live="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id' : 'default_variant.attributes.' . $attribute_idx . '.id' }}"
+                      required />
                     <x-input-error :messages="$errors->get(
                         $idx > 0
-                            ? 'other_variants.' . ($idx - 1) . '.attribute.' . $attribute_idx . '.selected_id'
-                            : 'default_variant.attributes.' . $attribute_idx . '.selected_id',
+                            ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id'
+                            : 'default_variant.attributes.' . $attribute_idx . '.id',
                     )" />
                   </td>
                   <td class="px-6 py-4">
-                    {{-- <x-select-input name="default_variant.brand_id" :options="collect($brands)"
-                      chooseOptionText="Select an Attribute" autocomplete="default_variant.brand_id"
-                      wire:model="default_variant.brand_id" /> --}}
-                    {{-- <x-input-error :messages="$errors->get('opening_hours.' . $dayOfWeek . '.opens_at')" /> --}}
+                    <x-select-input
+                      name="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.value_id' : 'default_variant.attributes.' . $attribute_idx . '.value_id' }}"
+                      :options="collect($attribute['values'])" chooseOptionText="Select an Attribute Value"
+                      autocomplete="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.value_id' : 'default_variant.attributes.' . $attribute_idx . '.value_id' }}"
+                      wire:model="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.value_id' : 'default_variant.attributes.' . $attribute_idx . '.value_id' }}"
+                      required />
+                    <x-input-error :messages="$errors->get(
+                        $idx > 0
+                            ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.value_id'
+                            : 'default_variant.attributes.' . $attribute_idx . '.value_id',
+                    )" />
                   </td>
                   <td class="px-6 py-4">
                     <x-td-action-button class="cursor-pointer">
                       <x-icons.trash class="w-5 h-5"
-                        wire:click="{{ $idx > 0 ? 'deleteAttributeFromOtherVariant(' . $idx - 1 . ',' . $attribute_idx . ')' : 'deleteAttributeFromDefaultVariant(' . $attribute_idx . ')' }}" />
+                        wire:click="deleteAttributeFromVariant({{ $idx }},{{ $attribute_idx }})" />
                     </x-td-action-button>
                   </td>
                 </tr>
@@ -182,10 +194,10 @@
           </table>
         </div>
 
-        <x-outline-button type="button" class="mt-6"
-          wire:click="{{ $idx > 0 ? 'addAttributeToOtherVariant(' . $idx - 1 . ')' : 'addAttributeToDefaultVariant' }}">Add
-          an
-          attribute</x-outline-button>
+        <x-outline-button type="button" class="mt-6" wire:click="addAttributeToVariant({{ $idx }})">
+          {{ __('Add
+                                                                                                                                                                                              an
+                                                                                                                                                                                              attribute') }}</x-outline-button>
       </div>
     @endforeach
 

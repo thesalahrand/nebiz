@@ -7,6 +7,8 @@ use Illuminate\Validation\Rules\Enum;
 use App\Enums\Unit;
 use App\Models\Store;
 use App\Models\Brand;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValue;
 use App\Services\ProductService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,11 +18,14 @@ class CreateProductForm extends Component
 {
     use WithFileUploads;
 
+    private const DEFAULT_VARIANT_IDX = 0;
+
     public Store $store;
     public array $brands;
     public array $product_attributes;
     public array $default_variant;
     public array $other_variants = [];
+    public string $test = '';
 
     public function rules()
     {
@@ -32,9 +37,18 @@ class CreateProductForm extends Component
             'default_variant.quantity' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
             'default_variant.image' => ['nullable', 'file', 'mimetypes:image/jpeg', 'max:1024'],
             'default_variant.additional_info' => ['nullable', 'string', 'max:1000'],
+            'default_variant.attributes' => ['nullable', 'array'],
+            // FIXME: check if product_attribute_value is a children of product_attribute
+            'default_variant.attributes.*.id' => ['required', 'integer', 'min:1', 'distinct', Rule::exists(ProductAttribute::class, 'id')->withoutTrashed()],
+            'default_variant.attributes.*.value_id' => ['required', 'integer', 'min:1', 'distinct', Rule::exists(ProductAttributeValue::class, 'id')->withoutTrashed()],
+            'other_variants' => ['nullable', 'array'],
             'other_variants.*.price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
             'other_variants.*.quantity' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
-            'other_variants.*.image' => ['nullable', 'file', 'mimetypes:image/jpeg', 'max:1024']
+            'other_variants.*.image' => ['nullable', 'file', 'mimetypes:image/jpeg', 'max:1024'],
+            'other_variants.*.attributes' => ['nullable', 'array'],
+            // FIXME: check if product_attribute_value is a children of product_attribute
+            'other_variants.*.attributes.*.id' => ['required', 'integer', 'min:1', 'distinct', Rule::exists(ProductAttribute::class, 'id')->withoutTrashed()],
+            'other_variants.*.attributes.*.value_id' => ['required', 'integer', 'min:1', 'distinct', Rule::exists(ProductAttributeValue::class, 'id')->withoutTrashed()],
         ];
     }
 
@@ -65,37 +79,56 @@ class CreateProductForm extends Component
         array_splice($this->other_variants, $idx, 1);
     }
 
-    public function addAttributeToDefaultVariant(): void
+    public function addAttributeToVariant($variant_idx): void
     {
-        $this->default_variant['attributes'][] = [
-            'selected_id' => '',
+        $new_attribute = [
+            'id' => '',
             'values' => [],
-            'selected_value_id' => ''
+            'value_id' => ''
         ];
+
+        if ($variant_idx === self::DEFAULT_VARIANT_IDX) {
+            $this->default_variant['attributes'][] = $new_attribute;
+        } else {
+            $other_variant_idx = $variant_idx - 1;
+            $this->other_variants[$other_variant_idx]['attributes'][] = $new_attribute;
+        }
     }
 
-    public function deleteAttributeFromDefaultVariant(int $attribute_idx): void
+    public function deleteAttributeFromVariant(int $variant_idx, int $attribute_idx): void
     {
-        array_splice($this->default_variant['attributes'], $attribute_idx, 1);
+        if ($variant_idx === self::DEFAULT_VARIANT_IDX) {
+            array_splice($this->default_variant['attributes'], $attribute_idx, 1);
+        } else {
+            $other_variant_idx = $variant_idx - 1;
+            array_splice($this->other_variants[$other_variant_idx]['attributes'], $attribute_idx, 1);
+        }
     }
 
-    public function addAttributeToOtherVariant(int $variant_idx): void
+    public function onUpdateAttribute($property, $value)
     {
-        $this->other_variants[$variant_idx]['attributes'][] = [
-            'selected_id' => '',
-            'values' => [],
-            'selected_value_id' => ''
-        ];
+        $product_attribute_values = ProductAttributeValue::select('id as value', 'name')
+            ->where('product_attribute_id', $value)
+            ->latest()
+            ->get()
+            ->toArray();
+
+        if (strpos($property, 'default_variant') === 0) {
+            [, , $attribute_idx,] = explode('.', $property);
+            $this->default_variant['attributes'][$attribute_idx]['values'] = $product_attribute_values;
+            $this->default_variant['attributes'][$attribute_idx]['value_id'] = '';
+        } else if (strpos($property, 'other_variants') === 0) {
+            [, $variant_idx, , $attribute_idx,] = explode('.', $property);
+            $this->other_variants[$variant_idx]['attributes'][$attribute_idx]['values'] = $product_attribute_values;
+            $this->other_variants[$variant_idx]['attributes'][$attribute_idx]['value_id'] = '';
+        }
     }
 
-    public function deleteAttributeFromOtherVariant(int $variant_idx, int $attribute_idx): void
+    public function updated($property, $value)
     {
-        array_splice($this->other_variants[$variant_idx]['attributes'], $attribute_idx, 1);
-    }
-
-    public function onChange($variant_idx)
-    {
-        dd($variant_idx);
+        if (preg_match("/\.attributes\.\d+\.id$/", $property)) {
+            $this->onUpdateAttribute($property, $value);
+        }
     }
 
     public function save(ProductService $productService)
@@ -103,6 +136,7 @@ class CreateProductForm extends Component
         abort_if($this->store->user_id !== Auth::id(), 403);
 
         $validated = $this->validate();
+        // dd($validated);
 
         $productService->store($validated, $this->store);
 
