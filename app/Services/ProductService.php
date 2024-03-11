@@ -66,7 +66,7 @@ class ProductService
         $this->validated = $validated;
         $this->store = $store;
 
-        $lastSkuId = max(Sku::latest()?->first()?->id ?? 0, Sku::max('id') ?? 0);
+        $lastSkuId = max(Sku::withTrashed()->latest()?->first()?->id ?? 0, Sku::withTrashed()->max('id') ?? 0);
 
         DB::transaction(function () use ($lastSkuId) {
             $this->storeDefaultVariant($lastSkuId);

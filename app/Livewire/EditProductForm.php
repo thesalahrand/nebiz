@@ -7,6 +7,7 @@ use Illuminate\Validation\Rules\Enum;
 use App\Enums\Unit;
 use App\Models\Store;
 use App\Models\Brand;
+use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Services\ProductService;
@@ -14,13 +15,14 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 
-class CreateProductForm extends Component
+class EditProductForm extends Component
 {
     use WithFileUploads;
 
     private const DEFAULT_VARIANT_IDX = 0;
 
     public Store $store;
+    public Product $product;
     public array $brands;
     public array $product_attributes;
     public array $default_variant;
@@ -51,21 +53,13 @@ class CreateProductForm extends Component
         ];
     }
 
-    public function mount(Store $store, array $brands, array $product_attributes)
+    public function mount(Store $store, Product $product, array $brands, array $product_attributes, array $default_variant, array $other_variants)
     {
         $this->store = $store;
         $this->brands = $brands;
         $this->product_attributes = $product_attributes;
-        $this->default_variant = [
-            'name' => '',
-            'brand_id' => '',
-            'unit_name' => '',
-            'price' => '',
-            'quantity' => '',
-            'image' => '',
-            'additional_info' => '',
-            'attributes' => []
-        ];
+        $this->default_variant = $default_variant;
+        $this->other_variant = $other_variants;
     }
 
     public function addOtherVariant(): void
@@ -132,7 +126,7 @@ class CreateProductForm extends Component
 
     public function save(ProductService $productService)
     {
-        abort_if($this->store->user_id !== Auth::id(), 403);
+        abort_if(($this->store->user_id !== Auth::id()) || ($this->store->id !== $this->product->store_id), 403);
 
         $validated = $this->validate();
 
@@ -150,6 +144,6 @@ class CreateProductForm extends Component
 
     public function render()
     {
-        return view('livewire.stores.products.create-product-form');
+        return view('livewire.stores.products.edit-product-form');
     }
 }

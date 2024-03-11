@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValue;
 use App\Models\Sku;
 use App\Models\Store;
 use App\Services\ProductService;
@@ -54,6 +55,64 @@ class ProductController extends Controller
         $product_attributes = ProductAttribute::select('id as value', 'name')->latest()->get()->toArray();
 
         return view('stores.products.create', compact('store', 'brands', 'product_attributes'));
+    }
+
+    public function edit(Request $request, Store $store, Product $product): View
+    {
+        abort_if(($store->user_id !== Auth::id()) || ($product->store_id !== $store->id), 403);
+
+        $brands = Brand::select('id as value', 'name')->latest()->get()->toArray();
+        $product_attributes = ProductAttribute::select('id as value', 'name')->latest()->get()->toArray();
+
+        $default_variant = [
+            'name' => $product->id,
+            'brand_id' => $product->brand_id,
+            'unit_name' => $product->unit_name,
+            'price' => $product->skus->first()->price,
+            'quantity' => $product->skus->first()->price,
+            'image' => '',
+            'additional_info' => $product->additional_info,
+            'attributes' => $product->skus->first()->productAttributeValues
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->attribute->id,
+                        'values' => ProductAttributeValue::select('id as value', 'name')
+                            ->where('product_attribute_id', $item->attribute->id)
+                            ->latest()
+                            ->get()
+                            ->toArray(),
+                        'value_id' => $item->id,
+                    ];
+                })
+                ->toArray()
+        ];
+
+        $other_variants = $product->skus->reject(fn($sku, $idx) => $idx === 0)
+            ->map(function ($sku) {
+                return [
+                    'price' => $sku->price,
+                    'quantity' => $sku->quantity,
+                    'image' => '',
+                    'attributes' => $sku->productAttributeValues
+                        ->map(function ($item) {
+                            return [
+                                'id' => $item->attribute->id,
+                                'values' => ProductAttributeValue::select('id as value', 'name')
+                                    ->where('product_attribute_id', $item->attribute->id)
+                                    ->latest()
+                                    ->get()
+                                    ->toArray(),
+                                'value_id' => $item->id,
+                            ];
+                        })
+                        ->toArray()
+                ];
+            })
+            ->values()
+            ->toArray();
+
+
+        return view('stores.products.edit', compact('store', 'product', 'brands', 'product_attributes', 'default_variant', 'other_variants'));
     }
 
     public function destroy(Request $request, Store $store, Product $product): RedirectResponse
