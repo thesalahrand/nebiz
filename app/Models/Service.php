@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Product extends Model
+class Service extends Model implements HasMedia
 {
-    use HasFactory, HasSlug, SoftDeletes;
+    use HasFactory, HasSlug, SoftDeletes, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -21,10 +23,12 @@ class Product extends Model
      */
     protected $fillable = [
         'store_id',
-        'brand_id',
         'name',
         'slug',
-        'unit_name',
+        'price',
+        'duration',
+        'duration_unit_name',
+        'image',
         'additional_info'
     ];
 
@@ -43,24 +47,9 @@ class Product extends Model
         return $this->belongsTo(Store::class);
     }
 
-    public function brand(): BelongsTo
+    public function registerMediaConversions(Media $media = null): void
     {
-        return $this->belongsTo(Brand::class);
-    }
-
-    public function skus(): HasMany
-    {
-        return $this->hasMany(Sku::class);
-    }
-
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function booted(): void
-    {
-        static::deleted(function (Product $product) {
-            $product->skus->each(fn($sku) => $sku->productAttributeValues()->detach());
-            $product->skus()->delete();
-        });
+        $this->addMediaConversion('thumb')
+            ->width(128);
     }
 }

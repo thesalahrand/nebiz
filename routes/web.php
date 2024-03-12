@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -28,6 +29,7 @@ Route::middleware('auth')->group(function () {
     });
     Route::resource('stores', StoreController::class);
     Route::resource('stores.products', ProductController::class)->except('store', 'update', 'show');
+    Route::resource('stores.services', ServiceController::class);
     Route::patch('addresses/{address}/change-current', [UserAddressController::class, 'changeCurrent'])->name('addresses.change-current');
     Route::resource('addresses', UserAddressController::class);
 });

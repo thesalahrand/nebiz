@@ -43,18 +43,6 @@
       )" />
     @endif
 
-    @if ($errors->any())
-      <div class="alert alert-danger">
-        <ul>
-          @foreach ($errors->messages() as $key => $messages)
-            @foreach ($messages as $message)
-              <li>{{ $key }}: {{ $message }}</li>
-            @endforeach
-          @endforeach
-        </ul>
-      </div>
-    @endif
-
     @foreach ([$default_variant, ...$other_variants] as $idx => $variant)
       <div wire:key="{{ $idx }}"
         x-bind:class="{{ $idx }} === currVariantIdx ? '' : 'max-h-0 overflow-hidden'">
@@ -210,8 +198,8 @@
 
         <x-outline-button type="button" class="mt-6" wire:click="addAttributeToVariant({{ $idx }})">
           {{ __('Add
-                                                                                                                                                                                                                                                                    an
-                                                                                                                                                                                                                                                                    attribute') }}</x-outline-button>
+                                                                                                                                                                                                                                                                                                  an
+                                                                                                                                                                                                                                                                                                  attribute') }}</x-outline-button>
       </div>
     @endforeach
 

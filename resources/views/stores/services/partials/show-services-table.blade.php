@@ -4,41 +4,33 @@
       <tr>
         <x-table-th>{{ __('ID') }}</x-table-th>
         <x-table-th>{{ __('Name') }}</x-table-th>
-        <x-table-th>{{ __('Brand') }}</x-table-th>
-        <x-table-th>{{ __('Variants') }}</x-table-th>
-        <x-table-th>{{ __('Price Range') }}</x-table-th>
+        <x-table-th>{{ __('Price') }}</x-table-th>
         <x-table-th>{{ __('Last Updated') }}</x-table-th>
         <x-table-th>{{ __('Action') }}</x-table-th>
       </tr>
     </thead>
     <tbody>
-      @forelse ($products as $product)
+      @forelse ($services as $service)
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
           <td class="px-6 py-4">
-            {{ $product['id'] }}
+            {{ $service['id'] }}
           </td>
           <td class="px-6 py-4">
-            {{ $product['name'] }}
+            {{ $service['name'] }}
           </td>
           <td class="px-6 py-4">
-            {{ $product['brand'] }}
+            {{ $service['price'] }}
           </td>
           <td class="px-6 py-4">
-            {{ $product['variants_count'] }}
-          </td>
-          <td class="px-6 py-4">
-            {{ $product['price_range'] }}
-          </td>
-          <td class="px-6 py-4">
-            {{ $product['updated_at'] }}
+            {{ $service['updated_at'] }}
           </td>
           <td class="px-6 py-4">
             <div class="flex items-center space-x-1">
-              {{-- <x-td-action-button
-                href="{{ route('stores.products.edit', ['store' => $store->id, 'product' => $product['id']]) }}">
+              <x-td-action-button
+                href="{{ route('stores.services.edit', ['store' => $store->id, 'service' => $service['id']]) }}">
                 <x-icons.pencil class="w-5 h-5" />
-              </x-td-action-button> --}}
-              <x-td-action-button class="cursor-pointer" @click="show, idToDelete = {{ $product['id'] }}">
+              </x-td-action-button>
+              <x-td-action-button class="cursor-pointer" @click="show, idToDelete = {{ $service['id'] }}">
                 <x-icons.trash class="w-5 h-5" />
               </x-td-action-button>
             </div>
@@ -47,12 +39,12 @@
       @empty
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
           <td class="px-6 py-4 text-center" colspan="6">
-            {{ __('No products to show') }}
+            {{ __('No services to show') }}
           </td>
         </tr>
       @endforelse
     </tbody>
   </table>
 
-  {{ $products->links() }}
+  {{ $services->links() }}
 </div>

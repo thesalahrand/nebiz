@@ -18,9 +18,11 @@
           </td>
           <td class="px-6 py-4">
             {{ $store->name }}
-            <div class="flex flex-wrap items-center space-x-2 mt-2">
+            <div class="flex flex-wrap items-center space-x-2 mt-1">
               <a href="{{ route('stores.products.index', $store->id) }}"
-                class="textfont-medium text-blue-600 underline dark:text-blue-500 ">{{ __('Manage Products') }}</a>
+                class="font-medium text-blue-600 underline dark:text-blue-500 ">{{ __('Products') }}</a>
+              <a href="{{ route('stores.services.index', $store->id) }}"
+                class="font-medium text-blue-600 underline dark:text-blue-500 ">{{ __('Services') }}</a>
             </div>
           </td>
           <td class="px-6 py-4">

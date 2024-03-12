@@ -96,7 +96,6 @@ class StoreController extends Controller
         abort_if($store->user_id !== Auth::id(), 403);
 
         $validated = $request->validated();
-        dd($validated);
 
         DB::transaction(function () use ($store, $validated) {
             $store->update($validated);

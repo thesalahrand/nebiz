@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             StoreTypeSeeder::class,
             ProductAttributeSeeder::class,
             ProductSeeder::class,
+            ServiceSeeder::class,
         ]);
     }
 }

@@ -19,6 +19,8 @@ class ProductController extends Controller
 {
     public function index(Store $store)
     {
+        abort_if($store->user_id !== Auth::id(), 403);
+
         $products = Product::with(['brand', 'skus'])
             ->where('store_id', $store->id)
             ->latest()
@@ -117,6 +119,8 @@ class ProductController extends Controller
 
     public function destroy(Request $request, Store $store, Product $product): RedirectResponse
     {
+        abort_if($store->user_id !== Auth::id(), 403);
+
         DB::transaction(function () use ($product) {
             $product->skus->each(fn($sku) => $sku->clearMediaCollection('sku-photos'));
             $product->delete();
