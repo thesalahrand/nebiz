@@ -44,10 +44,22 @@ class CreateProductForm extends Component
             'other_variants.*.price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
             'other_variants.*.quantity' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
             'other_variants.*.image' => ['nullable', 'file', 'mimetypes:image/jpeg', 'max:1024'],
-            'other_variants.*.attributes' => ['nullable', 'array'],
+            'other_variants.*.attributes' => [
+                'nullable',
+                'array',
+                function ($attribute, $value, $fail) {
+                    $attribute_pairs_count = count($value);
+                    $unique_attribute_ids_count = collect($value)->map(fn($el) => $el['id'])->unique()->count();
+                    $unique_attribute_value_ids_count = collect($value)->map(fn($el) => $el['value_id'])->unique()->count();
+
+                    if ($attribute_pairs_count != $unique_attribute_ids_count || $attribute_pairs_count != $unique_attribute_value_ids_count) {
+                        $fail('Duplicate attributes found.');
+                    }
+                }
+            ],
             // FIXME: check if product_attribute_value is a children of product_attribute
-            'other_variants.*.attributes.*.id' => ['required', 'integer', 'min:1', 'distinct', Rule::exists(ProductAttribute::class, 'id')->withoutTrashed()],
-            'other_variants.*.attributes.*.value_id' => ['required', 'integer', 'min:1', 'distinct', Rule::exists(ProductAttributeValue::class, 'id')->withoutTrashed()],
+            'other_variants.*.attributes.*.id' => ['required', 'integer', 'min:1', Rule::exists(ProductAttribute::class, 'id')->withoutTrashed()],
+            'other_variants.*.attributes.*.value_id' => ['required', 'integer', 'min:1', Rule::exists(ProductAttributeValue::class, 'id')->withoutTrashed()],
         ];
     }
 

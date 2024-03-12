@@ -43,6 +43,18 @@
       )" />
     @endif
 
+    @if ($errors->any())
+      <div class="alert alert-danger">
+        <ul>
+          @foreach ($errors->messages() as $key => $messages)
+            @foreach ($messages as $message)
+              <li>{{ $key }}: {{ $message }}</li>
+            @endforeach
+          @endforeach
+        </ul>
+      </div>
+    @endif
+
     @foreach ([$default_variant, ...$other_variants] as $idx => $variant)
       <div wire:key="{{ $idx }}"
         x-bind:class="{{ $idx }} === currVariantIdx ? '' : 'max-h-0 overflow-hidden'">
@@ -156,6 +168,9 @@
                       autocomplete="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id' : 'default_variant.attributes.' . $attribute_idx . '.id' }}"
                       wire:model.live="{{ $idx > 0 ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id' : 'default_variant.attributes.' . $attribute_idx . '.id' }}"
                       required />
+                    @if ($idx > 0)
+                      <x-input-error :messages="$errors->get('other_variants.' . ($idx - 1) . '.attributes')" />
+                    @endif
                     <x-input-error :messages="$errors->get(
                         $idx > 0
                             ? 'other_variants.' . ($idx - 1) . '.attributes.' . $attribute_idx . '.id'
@@ -195,8 +210,8 @@
 
         <x-outline-button type="button" class="mt-6" wire:click="addAttributeToVariant({{ $idx }})">
           {{ __('Add
-                                                                                                                                                                                                        an
-                                                                                                                                                                                                        attribute') }}</x-outline-button>
+                                                                                                                                                                                                                                                                    an
+                                                                                                                                                                                                                                                                    attribute') }}</x-outline-button>
       </div>
     @endforeach
 

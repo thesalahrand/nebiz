@@ -25,7 +25,7 @@ class ProductService
         $sku = Sku::create([
             'product_id' => $this->product->id,
             'sku' => strtoupper(dechex($lastSkuId + Sku::SKU_STARTS_FROM_IN_DEC)),
-            ...(collect($this->validated['default_variant'])->except('store_id', 'brand_id', 'name', 'unit_name', 'additional_info')->toArray())
+            ...(collect($this->validated['default_variant'])->except('brand_id', 'name', 'unit_name', 'additional_info')->toArray())
         ]);
 
         if (isset($this->validated['default_variant']['image']) && $this->validated['default_variant']['image'] !== '') {
@@ -65,6 +65,20 @@ class ProductService
     {
         $this->validated = $validated;
         $this->store = $store;
+
+        $lastSkuId = max(Sku::withTrashed()->latest()?->first()?->id ?? 0, Sku::withTrashed()->max('id') ?? 0);
+
+        DB::transaction(function () use ($lastSkuId) {
+            $this->storeDefaultVariant($lastSkuId);
+            $this->storeOtherVariants($lastSkuId);
+        });
+    }
+
+    public function update(array $validated, Store $store, Product $product)
+    {
+        $this->validated = $validated;
+        $this->store = $store;
+        $this->product = $product;
 
         $lastSkuId = max(Sku::withTrashed()->latest()?->first()?->id ?? 0, Sku::withTrashed()->max('id') ?? 0);
 
