@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request): View
     {
-        $stores = Store::latest()->paginate();
+        $stores = Store::latest()->get();
 
         return view('home', compact('stores'));
     }

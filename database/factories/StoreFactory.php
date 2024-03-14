@@ -24,6 +24,7 @@ class StoreFactory extends Factory
             'user_id' => ceil(static::$counter++ / static::$storesPerUser),
             'store_type_id' => StoreType::factory(),
             'name' => fake()->company,
+            'slug' => fake()->unique(true)->slug,
             'address' => fake()->streetAddress,
             'area' => fake()->citySuffix,
             'city' => fake()->city,

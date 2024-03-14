@@ -27,9 +27,10 @@ Route::middleware('auth')->group(function () {
         Route::patch('/', 'update')->name('update');
         Route::delete('/', 'destroy')->name('destroy');
     });
-    Route::resource('stores', StoreController::class);
+    Route::resource('stores', StoreController::class)->except('show');
+    Route::get('stores/{store:slug}', [StoreController::class, 'show'])->name('stores.show')->withoutMiddleware('auth');
     Route::resource('stores.products', ProductController::class)->except('store', 'update', 'show');
-    Route::resource('stores.services', ServiceController::class);
+    Route::resource('stores.services', ServiceController::class)->except('show');
     Route::patch('addresses/{address}/change-current', [UserAddressController::class, 'changeCurrent'])->name('addresses.change-current');
     Route::resource('addresses', UserAddressController::class);
 });

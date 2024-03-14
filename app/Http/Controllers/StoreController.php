@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\StoreUpdateRequest;
+use App\Models\Product;
+use App\Models\Service;
 use App\Models\Store;
 use App\Models\StoreOpeningHour;
 use App\Models\StoreType;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,27 +18,18 @@ use Illuminate\Support\Facades\DB;
 
 class StoreController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): View
     {
         $stores = Store::with('type')->where('user_id', Auth::id())->latest()->get();
         return view('stores.index', compact('stores'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         $types = StoreType::select('id as value', 'name')->latest()->get();
         return view('stores.create', compact('types'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreStoreRequest $request): RedirectResponse
     {
         $validated = $request->validated();
@@ -70,28 +64,66 @@ class StoreController extends Controller
         return to_route('stores.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Store $store)
     {
-        //
+        $products = Product::with([
+            'brand',
+            'skus'
+        ])
+            ->where('store_id', $store->id)
+            ->latest()
+            ->get()
+            ->map(function ($product) {
+                $minPrice = $product->skus->min(fn($sku) => $sku['price']);
+                $maxPrice = $product->skus->max(fn($sku) => $sku['price']);
+                $priceRange = trans('N/R');
+
+                if ($minPrice === $maxPrice)
+                    $priceRange = $minPrice . ' ' . trans('TK');
+                else if ($minPrice !== $maxPrice)
+                    $priceRange = $minPrice . ' - ' . $maxPrice . ' ' . trans('TK');
+
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'brand' => $product?->brand?->name ?? trans('N/R'),
+                    'variants_count' => $product->skus->count(),
+                    'price_range' => $priceRange,
+                    'updated_at' => $product->updated_at->format('Y-m-d H:i A')
+                ];
+            });
+
+        $services = Service::where('store_id', $store->id)
+            ->latest()
+            ->get()
+            ->map(function ($service) {
+                $price = trans('N/R');
+                if ($service->price) {
+                    $price = $service->price . ' ' . trans('TK');
+                }
+                if ($service->duration && $service->duration_unit_name) {
+                    $price .= "/{$service->duration} {$service->duration_unit_name}";
+                }
+
+                return [
+                    'id' => $service->id,
+                    'name' => $service->name,
+                    'price' => $price,
+                    'updated_at' => $service->updated_at->format('Y-m-d H:i A')
+                ];
+            });
+
+        return view('stores.show', compact('store', 'products', 'services'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Store $store)
+    public function edit(Store $store): View
     {
         abort_if($store->user_id !== Auth::id(), 403);
         $types = StoreType::select('id as value', 'name')->latest()->get();
         return view('stores.edit', compact('store', 'types'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(StoreUpdateRequest $request, Store $store)
+    public function update(StoreUpdateRequest $request, Store $store): RedirectResponse
     {
         abort_if($store->user_id !== Auth::id(), 403);
 
@@ -122,9 +154,6 @@ class StoreController extends Controller
         return to_route('stores.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request, Store $store): RedirectResponse
     {
         DB::transaction(function () use ($store) {

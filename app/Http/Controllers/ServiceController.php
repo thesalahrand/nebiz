@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ServiceStoreRequest;
-use App\Http\Requests\StoreUpdateRequest;
+use App\Http\Requests\ServiceUpdateRequest;
 use App\Models\Service;
 use App\Models\Store;
 use Illuminate\Http\RedirectResponse;
@@ -80,9 +80,9 @@ class ServiceController extends Controller
         return view('stores.services.edit', compact('store', 'service'));
     }
 
-    public function update(StoreUpdateRequest $request, Store $store, Service $service)
+    public function update(ServiceUpdateRequest $request, Store $store, Service $service)
     {
-        abort_if($store->user_id !== Auth::id(), 403);
+        abort_if(($store->user_id !== Auth::id()) || ($store->id !== $service->store_id), 403);
 
         $validated = $request->validated();
 
@@ -92,7 +92,6 @@ class ServiceController extends Controller
             $service->clearMediaCollection('service-photos');
             $service->addMediaFromRequest('image')->toMediaCollection('service-photos');
         }
-
 
         $request->session()->flash('flash', [
             'toast-message' => [

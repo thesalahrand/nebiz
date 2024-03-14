@@ -12,13 +12,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Store extends Model implements HasMedia
 {
     private const MY_FIXED_LATITUDE = 22.711555;
     private const MY_FIXED_LONGITUDE = 90.3609395;
 
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, SoftDeletes, HasSlug, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +31,7 @@ class Store extends Model implements HasMedia
         'user_id',
         'store_type_id',
         'name',
+        'slug',
         'address',
         'area',
         'city',
@@ -42,10 +45,37 @@ class Store extends Model implements HasMedia
         'additional_info'
     ];
 
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+
     protected function distance(): Attribute
     {
         return Attribute::make(
             get: fn(mixed $value, array $attributes): float => GetDistanceBetweenTwoGeoPoints::execute($attributes['latitude'], $attributes['longitude']),
+        );
+    }
+
+    protected function fullAddress(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes): string {
+                $value = $attributes['address'];
+                if ($attributes['area'])
+                    $value .= ', ' . $attributes['area'];
+                if ($attributes['city'])
+                    $value .= ', ' . $attributes['city'];
+                if ($attributes['postal_code'])
+                    $value .= ' - ' . $attributes['postal_code'];
+
+                return $value;
+            },
         );
     }
 

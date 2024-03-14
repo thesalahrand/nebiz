@@ -2,7 +2,7 @@
   <form method="post" action="{{ route('stores.services.update', ['store' => $store->id, 'service' => $service->id]) }}"
     enctype="multipart/form-data">
     @csrf
-    @method('PATCH')
+    @method('PUT')
 
     <h5 class="text-xl font-semibold text-gray-900 dark:text-white"> {{ __('Create a Service') }} </h5>
 

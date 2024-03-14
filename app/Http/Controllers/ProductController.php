@@ -29,19 +29,19 @@ class ProductController extends Controller
             ->through(function ($product) {
                 $minPrice = $product->skus->min(fn($sku) => $sku['price']);
                 $maxPrice = $product->skus->max(fn($sku) => $sku['price']);
-                $price_range = trans('N/R');
+                $priceRange = trans('N/R');
 
                 if ($minPrice === $maxPrice)
-                    $price_range = $minPrice . ' ' . trans('TK');
+                    $priceRange = $minPrice . ' ' . trans('TK');
                 else if ($minPrice !== $maxPrice)
-                    $price_range = $minPrice . ' - ' . $maxPrice . ' ' . trans('TK');
+                    $priceRange = $minPrice . ' - ' . $maxPrice . ' ' . trans('TK');
 
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
                     'brand' => $product?->brand?->name ?? trans('N/R'),
                     'variants_count' => $product->skus->count(),
-                    'price_range' => $price_range,
+                    'price_range' => $priceRange,
                     'updated_at' => $product->updated_at->format('Y-m-d H:i A')
                 ];
             });
